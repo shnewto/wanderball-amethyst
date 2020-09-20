@@ -6,23 +6,25 @@ use amethyst::{
     renderer::{Camera, ImageFormat, SpriteRender, SpriteSheet, SpriteSheetFormat, Texture},
 };
 
+use crate::audio::start_audio;
+
 pub const WANDERABLE_HEIGHT: f32 = 100.0;
 pub const WANDERABLE_WIDTH: f32 = 100.0;
 
 pub const BALL_RADIUS: f32 = 2.0;
 
-pub struct WanderBall;
+#[derive(Default)]
+pub struct Wanderball;
 
-impl SimpleState for WanderBall {
+impl SimpleState for Wanderball {
     fn on_start(&mut self, data: StateData<'_, GameData<'_, '_>>) {
         let world = data.world;
 
         let sprite_sheet_handle = load_sprite_sheet(world);
 
-        // world.register::<Ball>();
-
         initialize_ball(world, sprite_sheet_handle);
         initialize_camera(world);
+        start_audio(world);
     }
 }
 
