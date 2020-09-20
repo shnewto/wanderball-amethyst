@@ -11,10 +11,12 @@
 
 ### metal (probably metal if on macos)
 
-- `cargo run --features metal`
+`cargo run --features metal`
 
 ### vulkan (probably vulkan if not on macos)
 
-- `cargo run --features vulkan`
+`cargo run --features vulkan`
 
-- ← ↑ ↓ →
+## Playing
+
+← ↑ ↓ →
