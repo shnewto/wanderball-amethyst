@@ -16,7 +16,7 @@
 ### vulkan (probably vulkan if not on macos)
 
 1. Change `features = ["metal"]` in [Cargo.toml](/Cargo.toml) to `features = ["vulkan"]`
-1. `cargo run --features vulkan`
+1. `cargo run`
 
 ## Playing
 
