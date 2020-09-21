@@ -5,5 +5,6 @@ authors = ["Shea Newton <shnewto@gmail.com>"]
 edition = "2018"
 
 [dependencies.amethyst]
-amethyst =  "0.15"
+version =  "0.15"
 features = ["metal"]
+

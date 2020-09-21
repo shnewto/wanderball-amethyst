@@ -1,3 +1,4 @@
+use crate::audio::start_audio;
 use amethyst::{
     assets::{AssetStorage, Handle, Loader},
     core::transform::Transform,
@@ -6,34 +7,35 @@ use amethyst::{
     renderer::{Camera, ImageFormat, SpriteRender, SpriteSheet, SpriteSheetFormat, Texture},
 };
 
-use crate::audio::start_audio;
-
 pub const WANDERABLE_HEIGHT: f32 = 100.0;
 pub const WANDERABLE_WIDTH: f32 = 100.0;
 
 pub const BALL_RADIUS: f32 = 2.0;
 
 pub const DOOR_HEIGHT: f32 = 8.0;
-pub const DOOR_WIDTH: f32 = 2.0;
+pub const DOOR_WIDTH: f32 = 1.0;
+
+pub const WALL_HEIGHT: f32 = 100.0;
+pub const WALL_WIDTH: f32 = 2.0;
 
 #[derive(PartialEq, Eq)]
-pub enum Wall {
+pub enum Side {
     North,
-    South,
     East,
+    South,
     West,
 }
 
 pub struct Door {
-    pub wall: Wall,
+    pub side: Side,
     pub width: f32,
     pub height: f32,
 }
 
 impl Door {
-    fn new(wall: Wall) -> Door {
+    fn new(side: Side) -> Door {
         Door {
-            wall,
+            side,
             width: DOOR_WIDTH,
             height: DOOR_HEIGHT,
         }
@@ -41,6 +43,26 @@ impl Door {
 }
 
 impl Component for Door {
+    type Storage = DenseVecStorage<Self>;
+}
+
+pub struct Wall {
+    pub side: Side,
+    pub width: f32,
+    pub height: f32,
+}
+
+impl Wall {
+    fn new(side: Side) -> Wall {
+        Wall {
+            side,
+            width: WALL_WIDTH,
+            height: WALL_HEIGHT,
+        }
+    }
+}
+
+impl Component for Wall {
     type Storage = DenseVecStorage<Self>;
 }
 
@@ -54,8 +76,11 @@ impl SimpleState for Wanderball {
         let sprite_sheet_handle = load_sprite_sheet(world);
 
         world.register::<Door>();
+        world.register::<Wall>();
 
-        initialize_doors(world, sprite_sheet_handle.clone());
+        // initialize_doors(world, sprite_sheet_handle.clone());
+        // initialize_walls(world, sprite_sheet_handle.clone());
+        starting_door(world, sprite_sheet_handle.clone());
         initialize_ball(world, sprite_sheet_handle.clone());
         initialize_camera(world);
         start_audio(world);
@@ -90,7 +115,7 @@ fn initialize_ball(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>) 
         .build();
 }
 
-fn initialize_doors(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>) {
+fn _initialize_walls(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>) {
     let mut north_transform = Transform::default();
     let mut south_transform = Transform::default();
     let mut east_transform = Transform::default();
@@ -102,40 +127,109 @@ fn initialize_doors(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>)
 
     north_transform
         .rotate_2d(90.0_f32.to_radians())
-        .set_translation_xyz(x, WANDERABLE_HEIGHT - DOOR_WIDTH * 2.0, z);
+        .set_translation_xyz(x, WANDERABLE_HEIGHT - WALL_WIDTH * 0.5, z);
+    east_transform.set_translation_xyz(WANDERABLE_WIDTH - WALL_WIDTH * 0.5, y, z);
     south_transform
         .rotate_2d(90.0_f32.to_radians())
-        .set_translation_xyz(x, DOOR_WIDTH * 0.5, z);
-    east_transform.set_translation_xyz(WANDERABLE_WIDTH - DOOR_WIDTH * 0.5, y, z);
-    west_transform.set_translation_xyz(DOOR_WIDTH * 2.0, y, z);
+        .set_translation_xyz(x, WALL_WIDTH * 0.5, z);
+    west_transform.set_translation_xyz(WALL_WIDTH * 0.5, y, z);
 
     let sprite_render = SpriteRender::new(sprite_sheet_handle, 1);
 
     world
         .create_entity()
         .with(sprite_render.clone())
-        .with(Door::new(Wall::North))
+        .with(Wall::new(Side::North))
         .with(north_transform)
         .build();
 
     world
         .create_entity()
         .with(sprite_render.clone())
-        .with(Door::new(Wall::South))
+        .with(Wall::new(Side::South))
         .with(south_transform)
         .build();
 
     world
         .create_entity()
         .with(sprite_render.clone())
-        .with(Door::new(Wall::East))
+        .with(Wall::new(Side::East))
         .with(east_transform)
         .build();
 
     world
         .create_entity()
         .with(sprite_render.clone())
-        .with(Door::new(Wall::West))
+        .with(Wall::new(Side::West))
+        .with(west_transform)
+        .build();
+}
+
+fn _initialize_doors(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>) {
+    let mut north_transform = Transform::default();
+    let mut south_transform = Transform::default();
+    let mut east_transform = Transform::default();
+    let mut west_transform = Transform::default();
+
+    let y = WANDERABLE_HEIGHT / 2.0;
+    let x: f32 = WANDERABLE_WIDTH / 2.0;
+    let z: f32 = 0.0;
+
+    north_transform
+        .rotate_2d(90.0_f32.to_radians())
+        .set_translation_xyz(x, WANDERABLE_HEIGHT - DOOR_WIDTH * 0.5, z);
+    east_transform.set_translation_xyz(WANDERABLE_WIDTH - DOOR_WIDTH * 0.5, y, z);
+    south_transform
+        .rotate_2d(90.0_f32.to_radians())
+        .set_translation_xyz(x, DOOR_WIDTH * 0.5, z);
+    west_transform.set_translation_xyz(DOOR_WIDTH * 0.5, y, z);
+
+    let sprite_render = SpriteRender::new(sprite_sheet_handle, 2);
+
+    world
+        .create_entity()
+        .with(sprite_render.clone())
+        .with(Door::new(Side::North))
+        .with(north_transform)
+        .build();
+
+    world
+        .create_entity()
+        .with(sprite_render.clone())
+        .with(Door::new(Side::South))
+        .with(south_transform)
+        .build();
+
+    world
+        .create_entity()
+        .with(sprite_render.clone())
+        .with(Door::new(Side::East))
+        .with(east_transform)
+        .build();
+
+    world
+        .create_entity()
+        .with(sprite_render.clone())
+        .with(Door::new(Side::West))
+        .with(west_transform)
+        .build();
+}
+
+fn starting_door(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>) {
+    let mut west_transform = Transform::default();
+
+    let y = WANDERABLE_WIDTH * 0.25;
+    let x = DOOR_WIDTH * 0.5;
+    let z: f32 = 0.0;
+
+    west_transform.set_translation_xyz(x, y, z);
+
+    let sprite_render = SpriteRender::new(sprite_sheet_handle, 2);
+
+    world
+        .create_entity()
+        .with(sprite_render.clone())
+        .with(Door::new(Side::West))
         .with(west_transform)
         .build();
 }
