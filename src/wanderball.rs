@@ -13,7 +13,7 @@ pub const WANDERABLE_WIDTH: f32 = 100.0;
 pub const BALL_RADIUS: f32 = 2.0;
 
 pub const DOOR_HEIGHT: f32 = 8.0;
-pub const DOOR_WIDTH: f32 = 1.0;
+pub const DOOR_WIDTH: f32 = 24.0;
 
 pub const WALL_HEIGHT: f32 = 100.0;
 pub const WALL_WIDTH: f32 = 2.0;
@@ -80,8 +80,8 @@ impl SimpleState for Wanderball {
 
         // initialize_doors(world, sprite_sheet_handle.clone());
         // initialize_walls(world, sprite_sheet_handle.clone());
-        starting_door(world, sprite_sheet_handle.clone());
         initialize_ball(world, sprite_sheet_handle.clone());
+        starting_door(world, sprite_sheet_handle.clone());
         initialize_camera(world);
         start_audio(world);
     }
@@ -184,7 +184,7 @@ fn _initialize_doors(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>
         .set_translation_xyz(x, DOOR_WIDTH * 0.5, z);
     west_transform.set_translation_xyz(DOOR_WIDTH * 0.5, y, z);
 
-    let sprite_render = SpriteRender::new(sprite_sheet_handle, 2);
+    let sprite_render = SpriteRender::new(sprite_sheet_handle, 1);
 
     world
         .create_entity()
@@ -218,13 +218,13 @@ fn _initialize_doors(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>
 fn starting_door(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>) {
     let mut west_transform = Transform::default();
 
-    let y = WANDERABLE_WIDTH * 0.25;
-    let x = DOOR_WIDTH * 0.5;
+    let y = WANDERABLE_HEIGHT * 0.25;
+    let x = 0.0;
     let z: f32 = 0.0;
 
     west_transform.set_translation_xyz(x, y, z);
 
-    let sprite_render = SpriteRender::new(sprite_sheet_handle, 2);
+    let sprite_render = SpriteRender::new(sprite_sheet_handle, 1);
 
     world
         .create_entity()
@@ -250,7 +250,7 @@ fn load_sprite_sheet(world: &mut World) -> Handle<SpriteSheet> {
         let loader = world.read_resource::<Loader>();
         let texture_storage = world.read_resource::<AssetStorage<Texture>>();
         loader.load(
-            "textures/wanderball_spritesheet.png",
+            "textures/wanderball-spritesheet.png",
             ImageFormat::default(),
             (),
             &texture_storage,
@@ -260,7 +260,7 @@ fn load_sprite_sheet(world: &mut World) -> Handle<SpriteSheet> {
     let loader = world.read_resource::<Loader>();
     let sprite_sheet_store = world.read_resource::<AssetStorage<SpriteSheet>>();
     loader.load(
-        "textures/wanderball_spritesheet.ron",
+        "textures/wanderball-spritesheet.ron",
         SpriteSheetFormat(texture_handle),
         (),
         &sprite_sheet_store,
