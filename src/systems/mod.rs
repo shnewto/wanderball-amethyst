@@ -1,3 +1,6 @@
 pub use self::ball::BallSystem;
+pub use self::path::PathSystem;
 
-mod ball;
+pub mod ball;
+pub mod camera;
+pub mod path;

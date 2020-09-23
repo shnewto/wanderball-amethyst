@@ -8,3 +8,5 @@ edition = "2018"
 version =  "0.15"
 features = ["metal"]
 
+[dependencies]
+serde = "1.0.116"
