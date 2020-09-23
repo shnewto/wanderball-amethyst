@@ -59,35 +59,30 @@ impl<'s> System<'s> for BallSystem {
         Read<'s, InputHandler<StringBindings>>,
     );
 
-    fn run(&mut self, (mut transform, ball, config, input): Self::SystemData) {
+    fn run(&mut self, (mut transforms, balls, config, input): Self::SystemData) {
         let movement_x = input.axis_value("move_x");
         let movement_y = input.axis_value("move_y");
-        let (wanderable_height, wanderable_width, ball_radius) = {
-            (
-                config.wanderable_height,
-                config.wanderable_width,
-                config.ball_radius,
-            )
-        };
+        let (wanderable_height, wanderable_width) =
+            { (config.wanderable_height, config.wanderable_width) };
 
-        for (t, _b) in (&mut transform, &ball).join() {
+        for (transform, ball) in (&mut transforms, &balls).join() {
             if let Some(mv_amount) = movement_x {
                 let scaled_amount = mv_amount as f32;
-                let ball_x = t.translation().x;
-                t.set_translation_x(
+                let ball_x = transform.translation().x;
+                transform.set_translation_x(
                     (ball_x + scaled_amount)
-                        .min(wanderable_height - ball_radius)
-                        .max(ball_radius),
+                        .min(wanderable_height - ball.radius)
+                        .max(ball.radius),
                 );
             }
 
             if let Some(mv_amount) = movement_y {
                 let scaled_amount = mv_amount as f32;
-                let ball_y = t.translation().y;
-                t.set_translation_y(
+                let ball_y = transform.translation().y;
+                transform.set_translation_y(
                     (ball_y + scaled_amount)
-                        .min(wanderable_width - ball_radius)
-                        .max(ball_radius),
+                        .min(wanderable_width - ball.radius)
+                        .max(ball.radius),
                 );
             }
         }

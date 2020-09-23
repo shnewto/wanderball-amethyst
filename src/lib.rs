@@ -21,6 +21,7 @@ mod side;
 mod spritesheet;
 mod start;
 mod systems;
+mod util;
 mod wanderball;
 
 use crate::audio::Music;

@@ -6,6 +6,7 @@ use amethyst::{
 
 use crate::systems::BallSystem;
 use crate::systems::PathSystem;
+use crate::systems::VideographerSystem;
 #[derive(Default)]
 pub struct WanderballBundle;
 
@@ -17,17 +18,7 @@ impl<'a, 'b> SystemBundle<'a, 'b> for WanderballBundle {
     ) -> Result<(), Error> {
         builder.add(BallSystem, "ball_system", &["input_system"]);
         builder.add(PathSystem, "path_system", &[]);
-        // builder.add(MoveBallsSystem, "ball_system", &[]);
-        // builder.add(
-        //     BounceSystem,
-        //     "collision_system",
-        //     &["paddle_system", "ball_system"],
-        // );
-        // builder.add(
-        //     WinnerSystem,
-        //     "winner_system",
-        //     &["paddle_system", "ball_system"],
-        // );
+        builder.add(VideographerSystem, "videographer_system", &[]);
         Ok(())
     }
 }

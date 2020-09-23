@@ -4,4 +4,5 @@
     ball_raduis: 2.0,
     path_height: 8.0, 
     path_width: 24.0,
+    near_threshold: 0.0,
 ),
