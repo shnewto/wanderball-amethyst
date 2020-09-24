@@ -14,9 +14,6 @@ pub fn initialize_camera(world: &mut World, parent: Entity) {
         config.view_diameter
     };
 
-    // let mut transform = Transform::default();
-    // transform.set_translation_xyz(width * 0.5, height * 0.5, 1.0);
-
     world
         .create_entity()
         .with(Transform::default())

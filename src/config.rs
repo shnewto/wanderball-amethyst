@@ -6,6 +6,8 @@ pub struct WanderballConfig {
     pub ball_radius: f32,
     pub path_height: f32,
     pub path_width: f32,
+    pub path_length: usize,
+    pub movement_speed: f32,
 }
 
 impl Default for WanderballConfig {
@@ -15,6 +17,8 @@ impl Default for WanderballConfig {
             ball_radius: 2.0,
             path_height: 8.0,
             path_width: 24.0,
+            path_length: 100,
+            movement_speed: 0.25,
         }
     }
 }

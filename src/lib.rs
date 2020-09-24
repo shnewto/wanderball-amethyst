@@ -2,9 +2,9 @@
 
 use amethyst::{
     audio::{AudioBundle, DjSystemDesc},
+    config::Config,
     core::transform::TransformBundle,
     input::{InputBundle, StringBindings},
-    config::Config,
     prelude::*,
     renderer::{
         plugins::{RenderFlat2D, RenderToWindow},
@@ -38,7 +38,7 @@ pub fn run() -> amethyst::Result<()> {
     let binding_path = config_path.join("bindings.ron");
     let wanderball_config_path = config_path.join("wanderball.ron");
     let wanderball_config: WanderballConfig = Config::load(wanderball_config_path)?;
-    
+
     let input_bundle =
         InputBundle::<StringBindings>::new().with_bindings_from_file(binding_path)?;
 
@@ -65,8 +65,8 @@ pub fn run() -> amethyst::Result<()> {
 
     let assets_dir = app_root.join("assets");
     let mut game = Application::build(assets_dir, StartScreen::default())?
-    .with_resource(wanderball_config)    
-    .build(game_data)?;
+        .with_resource(wanderball_config)
+        .build(game_data)?;
     game.run();
     Ok(())
 }
