@@ -4,6 +4,7 @@ use amethyst::{
     audio::{AudioBundle, DjSystemDesc},
     core::transform::TransformBundle,
     input::{InputBundle, StringBindings},
+    config::Config,
     prelude::*,
     renderer::{
         plugins::{RenderFlat2D, RenderToWindow},
@@ -36,7 +37,7 @@ pub fn run() -> amethyst::Result<()> {
     let display_config_path = config_path.join("display.ron");
     let binding_path = config_path.join("bindings.ron");
     let wanderball_config_path = config_path.join("wanderball.ron");
-    let wanderball_config = WanderballConfig::load(wanderball_config_path);
+    let wanderball_config: WanderballConfig = Config::load(wanderball_config_path)?;
     
     let input_bundle =
         InputBundle::<StringBindings>::new().with_bindings_from_file(binding_path)?;

@@ -1,5 +1,5 @@
 (
-    view_diameter: 500,
+    view_diameter: 50.0,
     ball_radius: 2.0,
     path_height: 8.0, 
     path_width: 12.0,
