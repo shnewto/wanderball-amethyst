@@ -34,11 +34,13 @@ pub fn run() -> amethyst::Result<()> {
     let app_root = application_root_dir()?;
     let config_path = app_root.join("config");
     let display_config_path = config_path.join("display.ron");
-    let wanderball_config = WanderballConfig::load(&config_path.join("wanderball.ron"));
-    let binding_path = app_root.join("config").join("bindings.ron");
-
+    let binding_path = config_path.join("bindings.ron");
+    let wanderball_config_path = config_path.join("wanderball.ron");
+    let wanderball_config = WanderballConfig::load(wanderball_config_path);
+    
     let input_bundle =
         InputBundle::<StringBindings>::new().with_bindings_from_file(binding_path)?;
+
     let game_data = GameDataBuilder::default()
         .with_bundle(
             RenderingBundle::<DefaultBackend>::new()
@@ -62,8 +64,8 @@ pub fn run() -> amethyst::Result<()> {
 
     let assets_dir = app_root.join("assets");
     let mut game = Application::build(assets_dir, StartScreen::default())?
-        .with_resource(wanderball_config)
-        .build(game_data)?;
+    .with_resource(wanderball_config)    
+    .build(game_data)?;
     game.run();
     Ok(())
 }

@@ -1,7 +1,9 @@
-#[derive(PartialEq, Eq)]
+use serde::{Deserialize, Serialize};
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
 pub enum Side {
-    _North,
-    _East,
-    _South,
-    West,
+    Left,
+    Bottom,
+    Right,
+    Top,
 }

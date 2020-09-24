@@ -9,9 +9,9 @@ use amethyst::{
 use crate::config::WanderballConfig;
 
 pub fn initialize_camera(world: &mut World, parent: Entity) {
-    let (height, width) = {
+    let view_diameter = {
         let config = &world.read_resource::<WanderballConfig>();
-        (config.wanderable_width, config.wanderable_height)
+        config.view_diameter
     };
 
     // let mut transform = Transform::default();
@@ -20,7 +20,7 @@ pub fn initialize_camera(world: &mut World, parent: Entity) {
     world
         .create_entity()
         .with(Transform::default())
-        .with(Camera::standard_2d(width, height))
+        .with(Camera::standard_2d(view_diameter, view_diameter))
         .with(Parent { entity: parent })
         .build();
 }

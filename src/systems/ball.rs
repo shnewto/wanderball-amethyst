@@ -21,19 +21,15 @@ impl Component for Ball {
 pub fn initialize_ball(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>) {
     let mut local_transform = Transform::default();
 
-    let (ball_radius, wanderable_height, wanderable_width) = {
+    let (ball_radius, view_diameter) = {
         let config = &world.read_resource::<WanderballConfig>();
-        (
-            config.ball_radius,
-            config.wanderable_height,
-            config.wanderable_width,
-        )
+        (config.ball_radius, config.view_diameter)
     };
 
     local_transform.set_translation_xyz(
-        wanderable_width - (wanderable_width * 0.25),
-        wanderable_height - (wanderable_height * 0.75),
-        0.0,
+        view_diameter - (view_diameter * 0.25),
+        view_diameter - (view_diameter * 0.75),
+        1.0,
     );
 
     let sprite_render = SpriteRender::new(sprite_sheet_handle, 0);
@@ -55,24 +51,19 @@ impl<'s> System<'s> for BallSystem {
     type SystemData = (
         WriteStorage<'s, Transform>,
         ReadStorage<'s, Ball>,
-        Read<'s, WanderballConfig>,
         Read<'s, InputHandler<StringBindings>>,
     );
 
-    fn run(&mut self, (mut transforms, balls, config, input): Self::SystemData) {
+    fn run(&mut self, (mut transforms, balls, input): Self::SystemData) {
         let movement_x = input.axis_value("move_x");
         let movement_y = input.axis_value("move_y");
-        let (wanderable_height, wanderable_width) =
-            { (config.wanderable_height, config.wanderable_width) };
 
-        for (transform, ball) in (&mut transforms, &balls).join() {
+        for (transform, _ball) in (&mut transforms, &balls).join() {
             if let Some(mv_amount) = movement_x {
                 let scaled_amount = mv_amount as f32;
                 let ball_x = transform.translation().x;
                 transform.set_translation_x(
-                    (ball_x + scaled_amount)
-                        .min(wanderable_height - ball.radius)
-                        .max(ball.radius),
+                ball_x + scaled_amount
                 );
             }
 
@@ -80,9 +71,7 @@ impl<'s> System<'s> for BallSystem {
                 let scaled_amount = mv_amount as f32;
                 let ball_y = transform.translation().y;
                 transform.set_translation_y(
-                    (ball_y + scaled_amount)
-                        .min(wanderable_width - ball.radius)
-                        .max(ball.radius),
+                    ball_y + scaled_amount
                 );
             }
         }

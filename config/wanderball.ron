@@ -1,8 +1,6 @@
 (
-    wanderable_height: 100.0,
-    wanderable_width: 100.0,
-    ball_raduis: 2.0,
+    view_diameter: 500,
+    ball_radius: 2.0,
     path_height: 8.0, 
-    path_width: 24.0,
-    near_threshold: 0.0,
-),
+    path_width: 12.0,
+)

@@ -31,16 +31,12 @@ impl Component for Path {
 }
 
 pub fn starting_path(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>) {
-    let (wanderable_height, path_height, path_width) = {
+    let (view_diameter, path_height, path_width) = {
         let config = &world.read_resource::<WanderballConfig>();
-        (
-            config.wanderable_height,
-            config.path_height,
-            config.path_width,
-        )
+        (config.view_diameter, config.path_height, config.path_width)
     };
 
-    let y = wanderable_height * 0.25;
+    let y = view_diameter * 0.25;
     let x = 0.0;
     let z: f32 = 0.0;
 
@@ -52,7 +48,7 @@ pub fn starting_path(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>
     world
         .create_entity()
         .with(sprite_render.clone())
-        .with(Path::new(Side::West, path_width, path_height))
+        .with(Path::new(Side::Left, path_width, path_height))
         .with(west_transform)
         .build();
 }
