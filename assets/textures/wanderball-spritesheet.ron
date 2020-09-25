@@ -8,5 +8,11 @@ List((
             width: 4,
             height: 4,
         ),
+        (
+            x: 4,
+            y: 8,
+            width: 24,
+            height: 8,
+        ),
     ],
 ))

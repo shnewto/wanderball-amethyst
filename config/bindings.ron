@@ -8,8 +8,12 @@
             pos: Key(Up),
             neg: Key(Down),
         ),
+        "zoom" : Emulated(
+            pos: Key(Equals),
+            neg: Key(Minus)
+        ),
     },
     actions: {
-
+        "fast_movement": [[Key(LShift)], [Key(RShift)]]
     },
 )

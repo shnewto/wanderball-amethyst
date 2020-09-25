@@ -1,0 +1,11 @@
+(
+    view_height: 100.0,
+    view_width: 100.0,
+    ball_radius: 2.0,
+    path_height: 8.0, 
+    path_width: 24.0,
+    path_length: 1000,
+    movement_speed: 2.0,
+    fast_movement_speed: 10.0,
+    zoom_factor: 10.0,
+)
