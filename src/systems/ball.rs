@@ -21,14 +21,14 @@ impl Component for Ball {
 pub fn initialize_ball(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>) {
     let mut local_transform = Transform::default();
 
-    let (ball_radius, view_diameter) = {
+    let (ball_radius, view_height, view_width) = {
         let config = &world.read_resource::<WanderballConfig>();
-        (config.ball_radius, config.view_diameter)
+        (config.ball_radius, config.view_height, config.view_width)
     };
 
     local_transform.set_translation_xyz(
-        view_diameter - (view_diameter * 0.25),
-        view_diameter - (view_diameter * 0.75),
+        view_width - (view_width * 0.25),
+        view_height - (view_height * 0.75),
         1.0,
     );
 
@@ -58,16 +58,27 @@ impl<'s> System<'s> for BallSystem {
     fn run(&mut self, (mut transforms, balls, config, input): Self::SystemData) {
         let movement_x = input.axis_value("move_x");
         let movement_y = input.axis_value("move_y");
+        let fast_movement = input.action_is_down("fast_movement");
 
         for (transform, _ball) in (&mut transforms, &balls).join() {
             if let Some(mv_amount) = movement_x {
-                let scaled_amount = mv_amount as f32 * config.movement_speed;
+                let scaled_amount;
+                if let Some(true) = fast_movement {
+                    scaled_amount = mv_amount as f32 * config.fast_movement_speed;
+                } else {
+                    scaled_amount = mv_amount as f32 * config.movement_speed;
+                }
                 let ball_x = transform.translation().x;
                 transform.set_translation_x(ball_x + scaled_amount);
             }
 
             if let Some(mv_amount) = movement_y {
-                let scaled_amount = mv_amount as f32 * config.movement_speed;
+                let scaled_amount;
+                if let Some(true) = fast_movement {
+                    scaled_amount = mv_amount as f32 * config.fast_movement_speed;
+                } else {
+                    scaled_amount = mv_amount as f32 * config.movement_speed;
+                }
                 let ball_y = transform.translation().y;
                 transform.set_translation_y(ball_y + scaled_amount);
             }

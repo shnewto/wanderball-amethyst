@@ -1,22 +1,28 @@
 use amethyst::{
-    core::transform::Transform,
+    
+    core::{
+        transform::Transform,
+    },
     derive::SystemDesc,
     ecs::{
-        Component, DenseVecStorage, Entity, Join, ReadStorage, System, SystemData, World,
+        Component, DenseVecStorage, Entity, Join, Read, ReadStorage, System, SystemData, World,
         WriteStorage,
     },
     prelude::*,
+    input::{InputHandler, StringBindings},
+    renderer::Camera,
 };
 
 use crate::config::WanderballConfig;
 use crate::side::Side;
 use crate::systems::ball::Ball;
-use crate::util::{point_on_edge_of_rect, Point};
+use crate::util::{point_near_edge_of_rect, Point};
 
 /// The entity that holds the camera and moves it when it needs to
 #[derive(Default)]
 pub struct Videographer {
-    pub view_radius: f32,
+    pub view_width: f32,
+    pub view_height: f32,
     pub view_x: f32,
     pub view_y: f32,
 }
@@ -26,15 +32,16 @@ impl Component for Videographer {
 }
 
 pub fn initialize_videographer(world: &mut World) -> Entity {
-    let view_diameter = {
+    let (view_height,view_width) = {
         let config = &world.read_resource::<WanderballConfig>();
-        config.view_diameter
+        (config.view_height,config.view_width)
     };
 
     let videographer = Videographer {
-        view_radius: view_diameter * 0.5,
-        view_x: view_diameter * 0.5,
-        view_y: view_diameter * 0.5,
+        view_height: view_height,
+        view_width: view_width,
+        view_x: view_width * 0.5,
+        view_y: view_height * 0.5,
     };
 
     let mut local_transform = Transform::default();
@@ -53,11 +60,14 @@ pub struct VideographerSystem;
 impl<'s> System<'s> for VideographerSystem {
     type SystemData = (
         WriteStorage<'s, Transform>,
+        WriteStorage<'s, Camera>,
         WriteStorage<'s, Videographer>,
         ReadStorage<'s, Ball>,
+        Read<'s, WanderballConfig>,
+        Read<'s, InputHandler<StringBindings>>,
     );
 
-    fn run(&mut self, (mut transforms, mut videographers, balls): Self::SystemData) {
+    fn run(&mut self, (mut transforms, mut cameras, mut videographers, balls, config, input): Self::SystemData) {
         let mut ball_x = 0.0;
         let mut ball_y = 0.0;
 
@@ -72,17 +82,52 @@ impl<'s> System<'s> for VideographerSystem {
             y: ball_y,
         };
 
+        let mut curr_view_height = 0.0;
+        let mut curr_view_width = 0.0;
+
+        for (videographer, _) in (&mut videographers, &transforms).join() {
+            curr_view_height = videographer.view_height;
+            curr_view_width = videographer.view_width;
+        }
+
+        let mut new_view_height: Option<f32> = None;
+        let mut new_view_width: Option<f32> = None;
+
+        for (_, camera) in (&transforms, &mut cameras).join() {
+            if let Some(zoom_input) = input.axis_value("zoom") {
+                if zoom_input > 0.0 {
+                    let height = (curr_view_height - config.zoom_factor).max(100.0);
+                    let width = (curr_view_width - config.zoom_factor).max(100.0);
+                    new_view_height = Some(height);
+                    new_view_width = Some(width);
+                    *camera = Camera::standard_2d(width, height);
+                } else if zoom_input < 0.0 {
+                    let height = curr_view_height + config.zoom_factor;
+                    let width = curr_view_width + config.zoom_factor;
+                    new_view_height = Some(height);
+                    new_view_width = Some(width);
+                    *camera = Camera::standard_2d(width, height);
+                }
+            }
+        }
+
         for (videographer, transform) in (&mut videographers, &mut transforms).join() {
+
+            if let (Some(new_height), Some(new_width)) = (new_view_height, new_view_width) {
+                videographer.view_height = new_height;
+                videographer.view_width = new_width;
+            }
+
             let rect_center = Point {
                 x: videographer.view_x,
                 y: videographer.view_y,
             };
-            if let Some(side) =
-                point_on_edge_of_rect(&point, &rect_center, &(videographer.view_radius))
+            
+            if let Some(side) = point_near_edge_of_rect(&point, &rect_center, videographer.view_width * 0.5, 0.0)
             {
                 let mut new_x = videographer.view_x;
                 let mut new_y = videographer.view_x;
-                let shift_dist = videographer.view_radius * 2.0;
+                let shift_dist = videographer.view_width;
 
                 match side {
                     Side::Left => {

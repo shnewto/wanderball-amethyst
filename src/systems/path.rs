@@ -32,10 +32,10 @@ const DOWN: u8 = 2;
 const RIGHT: u8 = 3;
 
 pub fn initialize_path(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>) {
-    let (view_diameter, path_height, path_width, path_length) = {
+    let (view_height, path_height, path_width, path_length) = {
         let config = &world.read_resource::<WanderballConfig>();
         (
-            config.view_diameter,
+            config.view_height,
             config.path_height,
             config.path_width,
             config.path_length,
@@ -43,85 +43,128 @@ pub fn initialize_path(world: &mut World, sprite_sheet_handle: Handle<SpriteShee
     };
 
     // First sprite of path
-    let mut y = view_diameter * 0.25;
+    let mut y = view_height * 0.25;
     let mut x = 0.0;
     let z: f32 = 0.0;
 
-    let sprite_render = SpriteRender::new(sprite_sheet_handle, 1);
+    let path_render = SpriteRender::new(sprite_sheet_handle.clone(), 1);
 
     let mut first_transform = Transform::default();
     first_transform.set_translation_xyz(x, y, z);
 
     world
         .create_entity()
-        .with(sprite_render.clone())
+        .with(path_render.clone())
         .with(Path::new(path_width, path_height))
         .with(first_transform)
         .build();
 
-    let path_diameter_long = path_width * 0.5;
-    let _path_diameter_short = path_height * 0.5;
     // Rest of path
     let mut rng = rand::thread_rng();
-
     let mut last_choice = LEFT;
-
-    for _ in 0..path_length {
-        let sprite = sprite_render.clone();
-        let choice = rng.gen_range(0, 3);
+    for _ in 1..path_length {
+        let sprite = path_render.clone();
+        let choice = rng.gen_range(0, 4); // Don't want to go right atm but maybe down the road I will...
+        let mut rotation = 0.0f32;
         match choice {
             // it's all random! so if we get into a position where we'd have to
             // write over the last sprite we drew, we'll opt for using the
             // last random direction instead
             UP => {
+                rotation = 90.0f32;
                 if last_choice == DOWN {
-                    y = y - path_diameter_long;
+                    y = y - path_width;
+                    last_choice = DOWN;
+                } else if last_choice == LEFT {
+                    y = y + path_height;
+                    x = x - path_width + path_height;
+                    last_choice = choice;
+                } else if last_choice == RIGHT {
+                    y = y + path_height;
+                    x = x + path_width - path_height;                    
+                    last_choice = choice;
                 } else {
-                    y = y + path_diameter_long;
-                    last_choice = UP;
+                    y = y + path_width;
+                    last_choice = choice;
                 }
             }
             LEFT => {
-                if last_choice == RIGHT {
-                    x = x + path_diameter_long;
+                if last_choice == UP {
+                    y = y + path_width * 0.5 + path_height * 0.5;
+                    x = x - path_width * 0.5 + path_height * 0.5;
+                    last_choice = choice;
+                } else if last_choice == RIGHT {
+                    x = x + path_width;
+                    last_choice = RIGHT;
+                } else if last_choice == DOWN {
+                    y = y - path_width * 0.5 - path_height * 0.5;
+                    x = x - path_width * 0.5 + path_height * 0.5;
+                    last_choice = choice;
                 } else {
-                    x = x - path_diameter_long;
-                    last_choice = LEFT;
+                    x = x - path_width;
+                    last_choice = choice;
                 }
             }
             DOWN => {
+                rotation = 90.0f32;
                 if last_choice == UP {
-                    y = y + path_diameter_long;
+                    y = y + path_width;
+                    last_choice = UP;
+                } else if last_choice == LEFT {
+                    y = y - path_height;
+                    x = x - path_width + path_height;
+                    last_choice = choice;
+                } else if last_choice == RIGHT {
+                    y = y - path_height;
+                    x = x + path_width - path_height;
+                    last_choice = choice;
                 } else {
-                    y = y - path_diameter_long;
-                    last_choice = DOWN;
+                    y = y - path_width;
+                    last_choice = choice;
                 }
             }
             RIGHT => {
-                if last_choice == LEFT {
-                    x = x - path_diameter_long;
+                if last_choice == UP {
+                    y = y + path_width * 0.5 + path_height * 0.5;
+                    x = x + path_width * 0.5 - path_height * 0.5;
+                    last_choice = choice;
+                } else if last_choice == LEFT {
+                    x = x - path_width;
+                    last_choice = LEFT;
+                } else if last_choice == DOWN {
+                    y = y - path_width * 0.5 - path_height * 0.5;
+                    x = x + path_width * 0.5 - path_height * 0.5;
+                    last_choice = choice;
                 } else {
-                    x = x + path_diameter_long;
-                    last_choice = RIGHT;
+                    x = x + path_width;
+                    last_choice = choice;
                 }
             }
             _ => {
-                // this is unreachable so there's gotta be a better way... but for now lets just go left, maybe.
-                if last_choice == RIGHT {
-                    x = x + path_diameter_long;
+                // this _should be_ unreachable so there's gotta be a better way... 
+                // but for now lets just go left, maybe.
+                if last_choice == UP {
+                    y = y + path_width * 0.5 + path_height * 0.5;
+                    x = x - path_width * 0.5 + path_height * 0.5;
+                    last_choice = choice;
+
+                } else if last_choice == RIGHT {
+                    x = x + path_width;
+                    last_choice = choice;
+                } else if last_choice == DOWN {
+                    y = y - path_width * 0.5 - path_height * 0.5;
+                    x = x - path_width * 0.5 + path_height * 0.5;
+                    last_choice = choice;
                 } else {
-                    x = x - path_diameter_long;
-                    last_choice = LEFT;
+                    x = x - path_width;
+                    last_choice = choice;
                 }
             }
         }
 
         let mut next_transform = Transform::default();
         next_transform.set_translation_xyz(x, y, z);
-
-        if (UP | DOWN) == last_choice {
-            next_transform.rotate_2d(90.0f32.to_radians());
-        }
+        next_transform.rotate_2d(rotation.to_radians());
 
         world
             .create_entity()
