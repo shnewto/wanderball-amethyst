@@ -1,7 +1,7 @@
 use amethyst::{
     assets::Handle,
     core::{transform::Transform, Parent},
-    ecs::{Component, DenseVecStorage, World},
+    ecs::{Component, VecStorage, World},
     prelude::*,
     renderer::{SpriteRender, SpriteSheet},
 };
@@ -28,7 +28,7 @@ impl Default for PathTile {
 }
 
 impl Component for PathTile {
-    type Storage = DenseVecStorage<Self>;
+    type Storage = VecStorage<Self>;
 }
 
 pub struct Path {}
@@ -46,7 +46,7 @@ impl Default for Path {
 }
 
 impl Component for Path {
-    type Storage = DenseVecStorage<Self>;
+    type Storage = VecStorage<Self>;
 }
 
 const UP: u8 = 0;

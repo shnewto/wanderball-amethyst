@@ -25,6 +25,7 @@ mod start;
 mod systems;
 mod util;
 mod wanderball;
+mod camera;
 
 use crate::audio::Music;
 use crate::bundle::WanderballBundle;
