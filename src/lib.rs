@@ -17,6 +17,7 @@ use amethyst::{
 
 mod audio;
 mod bundle;
+mod components;
 mod config;
 mod side;
 mod spritesheet;
@@ -24,6 +25,7 @@ mod start;
 mod systems;
 mod util;
 mod wanderball;
+mod camera;
 
 use crate::audio::Music;
 use crate::bundle::WanderballBundle;

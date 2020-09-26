@@ -1,8 +1,5 @@
 use amethyst::{
-    core::{
-        transform::Transform,
-        Parent,
-    },
+    core::{transform::Transform, Parent},
     ecs::{Entity, World},
     prelude::*,
     renderer::Camera,

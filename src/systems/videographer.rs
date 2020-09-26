@@ -1,58 +1,19 @@
 use amethyst::{
-    
-    core::{
-        transform::Transform,
-    },
+    core::transform::Transform,
     derive::SystemDesc,
     ecs::{
-        Component, DenseVecStorage, Entity, Join, Read, ReadStorage, System, SystemData, World,
+        Join, Read, ReadStorage, System, SystemData,
         WriteStorage,
     },
-    prelude::*,
     input::{InputHandler, StringBindings},
     renderer::Camera,
 };
 
 use crate::config::WanderballConfig;
 use crate::side::Side;
-use crate::systems::ball::Ball;
+use crate::components::ball::Ball;
 use crate::util::{point_near_edge_of_rect, Point};
-
-/// The entity that holds the camera and moves it when it needs to
-#[derive(Default)]
-pub struct Videographer {
-    pub view_width: f32,
-    pub view_height: f32,
-    pub view_x: f32,
-    pub view_y: f32,
-}
-
-impl Component for Videographer {
-    type Storage = DenseVecStorage<Self>;
-}
-
-pub fn initialize_videographer(world: &mut World) -> Entity {
-    let (view_height,view_width) = {
-        let config = &world.read_resource::<WanderballConfig>();
-        (config.view_height,config.view_width)
-    };
-
-    let videographer = Videographer {
-        view_height: view_height,
-        view_width: view_width,
-        view_x: view_width * 0.5,
-        view_y: view_height * 0.5,
-    };
-
-    let mut local_transform = Transform::default();
-    local_transform.set_translation_xyz(videographer.view_x, videographer.view_y, 2.0);
-
-    world
-        .create_entity()
-        .with(videographer)
-        .with(local_transform)
-        .build()
-}
+use crate::components::videographer::Videographer;
 
 #[derive(SystemDesc, Default)]
 pub struct VideographerSystem;
@@ -67,7 +28,10 @@ impl<'s> System<'s> for VideographerSystem {
         Read<'s, InputHandler<StringBindings>>,
     );
 
-    fn run(&mut self, (mut transforms, mut cameras, mut videographers, balls, config, input): Self::SystemData) {
+    fn run(
+        &mut self,
+        (mut transforms, mut cameras, mut videographers, balls, config, input): Self::SystemData,
+    ) {
         let mut ball_x = 0.0;
         let mut ball_y = 0.0;
 
@@ -112,7 +76,6 @@ impl<'s> System<'s> for VideographerSystem {
         }
 
         for (videographer, transform) in (&mut videographers, &mut transforms).join() {
-
             if let (Some(new_height), Some(new_width)) = (new_view_height, new_view_width) {
                 videographer.view_height = new_height;
                 videographer.view_width = new_width;
@@ -122,8 +85,9 @@ impl<'s> System<'s> for VideographerSystem {
                 x: videographer.view_x,
                 y: videographer.view_y,
             };
-            
-            if let Some(side) = point_near_edge_of_rect(&point, &rect_center, videographer.view_width * 0.5, 0.0)
+
+            if let Some(side) =
+                point_near_edge_of_rect(&point, &rect_center, videographer.view_width * 0.5, 0.0)
             {
                 let mut new_x = videographer.view_x;
                 let mut new_y = videographer.view_x;
