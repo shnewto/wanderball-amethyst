@@ -1,5 +1,8 @@
 # wanderball
 
+Wander the map as a ball :)
+
+
 ![](/wanderball.png)
 
 ## Dependencies
