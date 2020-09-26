@@ -1,8 +1,8 @@
 use crate::audio::start_audio;
+use crate::components::path::initialize_path;
 use crate::spritesheet;
 use crate::systems::ball::initialize_ball;
 use crate::systems::camera::initialize_camera;
-use crate::systems::path::initialize_path;
 use crate::systems::videographer::initialize_videographer;
 use amethyst::prelude::*;
 
@@ -14,7 +14,6 @@ impl SimpleState for Wanderball {
         let world = data.world;
 
         let sprite_sheet_handle = spritesheet::load_sprite_sheet(world);
-
         let videographer = initialize_videographer(world);
         initialize_camera(world, videographer);
         initialize_ball(world, sprite_sheet_handle.clone());

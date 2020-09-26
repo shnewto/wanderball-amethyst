@@ -1,15 +1,12 @@
 use amethyst::{
-    
-    core::{
-        transform::Transform,
-    },
+    core::transform::Transform,
     derive::SystemDesc,
     ecs::{
         Component, DenseVecStorage, Entity, Join, Read, ReadStorage, System, SystemData, World,
         WriteStorage,
     },
-    prelude::*,
     input::{InputHandler, StringBindings},
+    prelude::*,
     renderer::Camera,
 };
 
@@ -32,9 +29,9 @@ impl Component for Videographer {
 }
 
 pub fn initialize_videographer(world: &mut World) -> Entity {
-    let (view_height,view_width) = {
+    let (view_height, view_width) = {
         let config = &world.read_resource::<WanderballConfig>();
-        (config.view_height,config.view_width)
+        (config.view_height, config.view_width)
     };
 
     let videographer = Videographer {
@@ -67,7 +64,10 @@ impl<'s> System<'s> for VideographerSystem {
         Read<'s, InputHandler<StringBindings>>,
     );
 
-    fn run(&mut self, (mut transforms, mut cameras, mut videographers, balls, config, input): Self::SystemData) {
+    fn run(
+        &mut self,
+        (mut transforms, mut cameras, mut videographers, balls, config, input): Self::SystemData,
+    ) {
         let mut ball_x = 0.0;
         let mut ball_y = 0.0;
 
@@ -112,7 +112,6 @@ impl<'s> System<'s> for VideographerSystem {
         }
 
         for (videographer, transform) in (&mut videographers, &mut transforms).join() {
-
             if let (Some(new_height), Some(new_width)) = (new_view_height, new_view_width) {
                 videographer.view_height = new_height;
                 videographer.view_width = new_width;
@@ -122,8 +121,9 @@ impl<'s> System<'s> for VideographerSystem {
                 x: videographer.view_x,
                 y: videographer.view_y,
             };
-            
-            if let Some(side) = point_near_edge_of_rect(&point, &rect_center, videographer.view_width * 0.5, 0.0)
+
+            if let Some(side) =
+                point_near_edge_of_rect(&point, &rect_center, videographer.view_width * 0.5, 0.0)
             {
                 let mut new_x = videographer.view_x;
                 let mut new_y = videographer.view_x;

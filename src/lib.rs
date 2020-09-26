@@ -17,6 +17,7 @@ use amethyst::{
 
 mod audio;
 mod bundle;
+mod components;
 mod config;
 mod side;
 mod spritesheet;
