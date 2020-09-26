@@ -169,25 +169,7 @@ pub fn initialize_path(world: &mut World, sprite_sheet_handle: Handle<SpriteShee
                     last_choice = choice;
                 }
             }
-            _ => {
-                // this _should be_ unreachable so there's gotta be a better way...
-                // but for now lets just go left, maybe.
-                if last_choice == UP {
-                    y = y + path_width * 0.5 + path_height * 0.5;
-                    x = x - path_width * 0.5 + path_height * 0.5;
-                    last_choice = choice;
-                } else if last_choice == RIGHT {
-                    x = x + path_width;
-                    last_choice = choice;
-                } else if last_choice == DOWN {
-                    y = y - path_width * 0.5 - path_height * 0.5;
-                    x = x - path_width * 0.5 + path_height * 0.5;
-                    last_choice = choice;
-                } else {
-                    x = x - path_width;
-                    last_choice = choice;
-                }
-            }
+            _ => unreachable!(),
         }
 
         let mut next_transform = Transform::default();
