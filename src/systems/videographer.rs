@@ -43,37 +43,52 @@ impl<'s> System<'s> for VideographerSystem {
             y: ball_y,
         };
 
-        let mut curr_view_height = 0.0;
-        let mut curr_view_width = 0.0;
+        let fast_zoom = input.action_is_down("fast_movement");        
 
-        for (videographer, _) in (&mut videographers, &transforms).join() {
-            curr_view_height = videographer.view_height;
+        let (mut curr_view_width, mut curr_view_height) = (0.0, 0.0);
+        for (videographer, _) in (&videographers, &transforms).join() {
             curr_view_width = videographer.view_width;
+            curr_view_height = videographer.view_height;
         }
 
-        let mut new_view_height: Option<f32> = None;
-        let mut new_view_width: Option<f32> = None;
+        let zoom_factor = (curr_view_height).max(curr_view_width) / config.zoom_factor;
+        let fast_zoom_factor = (curr_view_height).max(curr_view_width) / config.fast_zoom_factor;
+
+        let mut height: Option<f32> = None;
+        let mut width: Option<f32> = None;
+        let mut new_view_height = 0.0;
+        let mut new_view_width = 0.0;
 
         for (_, camera) in (&transforms, &mut cameras).join() {
             if let Some(zoom_input) = input.axis_value("zoom") {
                 if zoom_input > 0.0 {
-                    let height = (curr_view_height - config.zoom_factor).max(100.0);
-                    let width = (curr_view_width - config.zoom_factor).max(100.0);
-                    new_view_height = Some(height);
-                    new_view_width = Some(width);
-                    *camera = Camera::standard_2d(width, height);
+                    if let Some(true) = fast_zoom {
+                        new_view_height = (curr_view_height - fast_zoom_factor).max(100.0);
+                        new_view_width = (curr_view_width - fast_zoom_factor).max(100.0);
+                    } else {
+                        new_view_height = (curr_view_height - zoom_factor).max(100.0);
+                        new_view_width = (curr_view_width - zoom_factor).max(100.0);
+                    }
+                    *camera = Camera::standard_2d(new_view_width, new_view_height);
+                    height = Some(new_view_height);
+                    width =  Some(new_view_width);
                 } else if zoom_input < 0.0 {
-                    let height = curr_view_height + config.zoom_factor;
-                    let width = curr_view_width + config.zoom_factor;
-                    new_view_height = Some(height);
-                    new_view_width = Some(width);
-                    *camera = Camera::standard_2d(width, height);
+                    if let Some(true) = fast_zoom {
+                        new_view_height = (curr_view_height + fast_zoom_factor).max(100.0);
+                        new_view_width = (curr_view_width + fast_zoom_factor).max(100.0);
+                    } else {
+                        new_view_height = (curr_view_height + zoom_factor).max(100.0);
+                        new_view_width = (curr_view_width + zoom_factor).max(100.0);
+                    }
+                    *camera = Camera::standard_2d(new_view_width, new_view_height);
+                    height = Some(new_view_height);
+                    width =  Some(new_view_width);
                 }
             }
         }
 
         for (videographer, transform) in (&mut videographers, &mut transforms).join() {
-            if let (Some(new_height), Some(new_width)) = (new_view_height, new_view_width) {
+            if let (Some(new_height), Some(new_width)) = (height, width) {
                 videographer.view_height = new_height;
                 videographer.view_width = new_width;
             }

@@ -5,7 +5,8 @@
     path_height: 8.0, 
     path_width: 24.0,
     path_length: 10000,
-    movement_speed: 1.0,
-    fast_movement_speed: 10.0,
-    zoom_factor: 10.0,
+    move_factor: 100.0,
+    fast_move_factor: 10.0,
+    zoom_factor: 50.0,
+    fast_zoom_factor: 5.0,
 )

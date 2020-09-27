@@ -8,9 +8,10 @@ pub struct WanderballConfig {
     pub path_height: f32,
     pub path_width: f32,
     pub path_length: usize,
-    pub movement_speed: f32,
-    pub fast_movement_speed: f32,
+    pub move_factor: f32,
+    pub fast_move_factor: f32,
     pub zoom_factor: f32,
+    pub fast_zoom_factor: f32,
 }
 
 impl Default for WanderballConfig {
@@ -22,9 +23,10 @@ impl Default for WanderballConfig {
             path_height: 8.0,
             path_width: 24.0,
             path_length: 100,
-            movement_speed: 0.5,
-            fast_movement_speed: 1.0,
-            zoom_factor: 10.0,
+            move_factor: 0.5,
+            fast_move_factor: 1.0,
+            zoom_factor: 50.0,
+            fast_zoom_factor: 10.0,
         }
     }
 }
