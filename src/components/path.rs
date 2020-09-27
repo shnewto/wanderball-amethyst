@@ -9,48 +9,17 @@ use amethyst::{
 use rand::Rng;
 
 use crate::config::WanderballConfig;
+use crate::components::shapes::rectangle::Size;
 
-pub struct PathTile {
-    pub x: f32,
-    pub y: f32,
-    pub width: f32,
-    pub height: f32,
-}
+#[derive(Default)]
+pub struct PathSegment;
 
-impl PathTile {
-    fn new(x: f32, y: f32, width: f32, height: f32) -> PathTile {
-        PathTile {
-            x,
-            y,
-            width,
-            height,
-        }
-    }
-}
-
-impl Default for PathTile {
-    fn default() -> Self {
-        PathTile::new(0.0, 0.0, 8.0, 24.0)
-    }
-}
-
-impl Component for PathTile {
+impl Component for PathSegment {
     type Storage = VecStorage<Self>;
 }
 
-pub struct Path {}
-
-impl Path {
-    fn new() -> Path {
-        Path {}
-    }
-}
-
-impl Default for Path {
-    fn default() -> Self {
-        Path::new()
-    }
-}
+#[derive(Default)]
+pub struct Path;
 
 impl Component for Path {
     type Storage = VecStorage<Self>;
@@ -62,30 +31,31 @@ const DOWN: u8 = 2;
 const RIGHT: u8 = 3;
 
 pub fn initialize_path(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>) {
-    let (view_height, path_height, path_width, path_length) = {
+    let (view_height, path_segment_height, path_segment_width, path_length) = {
         let config = &world.read_resource::<WanderballConfig>();
         (
             config.view_height,
-            config.path_height,
-            config.path_width,
+            config.path_segment_height,
+            config.path_segment_width,
             config.path_length,
         )
     };
 
-    // origin path tile
+    // origin path segment
     let mut y = view_height * 0.25;
     let mut x = 0.0;
     let z: f32 = 0.0;
 
-    let tile_render = SpriteRender::new(sprite_sheet_handle, 1);
+    let segment_render = SpriteRender::new(sprite_sheet_handle, 1);
 
     let mut first_transform = Transform::default();
     first_transform.set_translation_xyz(x, y, z);
 
     world
         .create_entity()
-        .with(tile_render.clone())
-        .with(PathTile::new(x, y, path_width, path_height))
+        .with(segment_render.clone())
+        .with(PathSegment)
+        .with(Size::new(path_segment_width, path_segment_height))
         .with(first_transform)
         .build();
 
@@ -102,70 +72,70 @@ pub fn initialize_path(world: &mut World, sprite_sheet_handle: Handle<SpriteShee
             UP => {
                 rotation = 90.0f32;
                 if last_choice == DOWN {
-                    y = y - path_width;
+                    y = y - path_segment_width;
                     last_choice = DOWN;
                 } else if last_choice == LEFT {
-                    y = y + path_height;
-                    x = x - path_width + path_height;
+                    y = y + path_segment_height;
+                    x = x - path_segment_width + path_segment_height;
                     last_choice = choice;
                 } else if last_choice == RIGHT {
-                    y = y + path_height;
-                    x = x + path_width - path_height;
+                    y = y + path_segment_height;
+                    x = x + path_segment_width - path_segment_height;
                     last_choice = choice;
                 } else {
-                    y = y + path_width;
+                    y = y + path_segment_width;
                     last_choice = choice;
                 }
             }
             LEFT => {
                 if last_choice == UP {
-                    y = y + path_width * 0.5 + path_height * 0.5;
-                    x = x - path_width * 0.5 + path_height * 0.5;
+                    y = y + path_segment_width * 0.5 + path_segment_height * 0.5;
+                    x = x - path_segment_width * 0.5 + path_segment_height * 0.5;
                     last_choice = choice;
                 } else if last_choice == RIGHT {
-                    x = x + path_width;
+                    x = x + path_segment_width;
                     last_choice = RIGHT;
                 } else if last_choice == DOWN {
-                    y = y - path_width * 0.5 - path_height * 0.5;
-                    x = x - path_width * 0.5 + path_height * 0.5;
+                    y = y - path_segment_width * 0.5 - path_segment_height * 0.5;
+                    x = x - path_segment_width * 0.5 + path_segment_height * 0.5;
                     last_choice = choice;
                 } else {
-                    x = x - path_width;
+                    x = x - path_segment_width;
                     last_choice = choice;
                 }
             }
             DOWN => {
                 rotation = 90.0f32;
                 if last_choice == UP {
-                    y = y + path_width;
+                    y = y + path_segment_width;
                     last_choice = UP;
                 } else if last_choice == LEFT {
-                    y = y - path_height;
-                    x = x - path_width + path_height;
+                    y = y - path_segment_height;
+                    x = x - path_segment_width + path_segment_height;
                     last_choice = choice;
                 } else if last_choice == RIGHT {
-                    y = y - path_height;
-                    x = x + path_width - path_height;
+                    y = y - path_segment_height;
+                    x = x + path_segment_width - path_segment_height;
                     last_choice = choice;
                 } else {
-                    y = y - path_width;
+                    y = y - path_segment_width;
                     last_choice = choice;
                 }
             }
             RIGHT => {
                 if last_choice == UP {
-                    y = y + path_width * 0.5 + path_height * 0.5;
-                    x = x + path_width * 0.5 - path_height * 0.5;
+                    y = y + path_segment_width * 0.5 + path_segment_height * 0.5;
+                    x = x + path_segment_width * 0.5 - path_segment_height * 0.5;
                     last_choice = choice;
                 } else if last_choice == LEFT {
-                    x = x - path_width;
+                    x = x - path_segment_width;
                     last_choice = LEFT;
                 } else if last_choice == DOWN {
-                    y = y - path_width * 0.5 - path_height * 0.5;
-                    x = x + path_width * 0.5 - path_height * 0.5;
+                    y = y - path_segment_width * 0.5 - path_segment_height * 0.5;
+                    x = x + path_segment_width * 0.5 - path_segment_height * 0.5;
                     last_choice = choice;
                 } else {
-                    x = x + path_width;
+                    x = x + path_segment_width;
                     last_choice = choice;
                 }
             }
@@ -178,8 +148,9 @@ pub fn initialize_path(world: &mut World, sprite_sheet_handle: Handle<SpriteShee
 
         world
             .create_entity()
-            .with(tile_render.clone())
-            .with(PathTile::new(x, y, path_width, path_height))
+            .with(segment_render.clone())
+            .with(PathSegment)
+            .with(Size::new(path_segment_width, path_segment_height))
             .with(next_transform)
             .with(Hidden)
             .build();
