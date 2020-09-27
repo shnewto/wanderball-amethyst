@@ -1,6 +1,6 @@
 use amethyst::{
     assets::Handle,
-    core::{transform::Transform, Parent},
+    core::{transform::Transform, Hidden},
     ecs::{Component, VecStorage, World},
     prelude::*,
     renderer::{SpriteRender, SpriteSheet},
@@ -11,19 +11,26 @@ use rand::Rng;
 use crate::config::WanderballConfig;
 
 pub struct PathTile {
+    pub x: f32,
+    pub y: f32,
     pub width: f32,
     pub height: f32,
 }
 
 impl PathTile {
-    fn new(width: f32, height: f32) -> PathTile {
-        PathTile { width, height }
+    fn new(x: f32, y: f32, width: f32, height: f32) -> PathTile {
+        PathTile {
+            x,
+            y,
+            width,
+            height,
+        }
     }
 }
 
 impl Default for PathTile {
     fn default() -> Self {
-        PathTile::new(0.0, 0.0)
+        PathTile::new(0.0, 0.0, 8.0, 24.0)
     }
 }
 
@@ -65,12 +72,6 @@ pub fn initialize_path(world: &mut World, sprite_sheet_handle: Handle<SpriteShee
         )
     };
 
-    let path = world
-        .create_entity()
-        .with(Path::default())
-        .with(Transform::default())
-        .build();
-
     // origin path tile
     let mut y = view_height * 0.25;
     let mut x = 0.0;
@@ -84,9 +85,8 @@ pub fn initialize_path(world: &mut World, sprite_sheet_handle: Handle<SpriteShee
     world
         .create_entity()
         .with(tile_render.clone())
-        .with(PathTile::new(path_width, path_height))
+        .with(PathTile::new(x, y, path_width, path_height))
         .with(first_transform)
-        .with(Parent { entity: path })
         .build();
 
     // Rest of path
@@ -179,9 +179,9 @@ pub fn initialize_path(world: &mut World, sprite_sheet_handle: Handle<SpriteShee
         world
             .create_entity()
             .with(tile_render.clone())
-            .with(PathTile::new(path_width, path_height))
+            .with(PathTile::new(x, y, path_width, path_height))
             .with(next_transform)
-            .with(Parent { entity: path })
+            .with(Hidden)
             .build();
     }
 }

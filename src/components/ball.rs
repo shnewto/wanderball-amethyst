@@ -1,8 +1,8 @@
 use amethyst::{
-    core::{transform::Transform},
     assets::Handle,
+    core::transform::Transform,
+    ecs::{Component, VecStorage, World},
     prelude::*,
-    ecs::{World, Component, VecStorage},
     renderer::{SpriteRender, SpriteSheet},
 };
 

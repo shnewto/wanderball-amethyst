@@ -1,9 +1,9 @@
 use crate::audio::start_audio;
-use crate::components::path::initialize_path;
-use crate::spritesheet;
-use crate::components::ball::initialize_ball;
 use crate::camera::initialize_camera;
+use crate::components::ball::initialize_ball;
+use crate::components::path::initialize_path;
 use crate::components::videographer::initialize_videographer;
+use crate::spritesheet;
 use amethyst::prelude::*;
 
 #[derive(Default)]

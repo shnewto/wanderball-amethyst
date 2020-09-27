@@ -1,11 +1,10 @@
 use amethyst::{
-    core::{transform::Transform},
+    core::transform::Transform,
+    ecs::{Component, Entity, VecStorage, World},
     prelude::*,
-    ecs::{World,  Entity, Component, VecStorage},
 };
 
 use crate::config::WanderballConfig;
-
 
 /// The entity that holds the camera and moves it when it needs to
 #[derive(Default)]

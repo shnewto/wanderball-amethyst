@@ -1,12 +1,12 @@
 use amethyst::{
     core::Transform,
     derive::SystemDesc,
-    ecs::{Join, ReadStorage, Read, System, SystemData, WriteStorage},
+    ecs::{Join, Read, ReadStorage, System, SystemData, WriteStorage},
     input::{InputHandler, StringBindings},
 };
 
-use crate::config::WanderballConfig;
 use crate::components::ball::Ball;
+use crate::config::WanderballConfig;
 
 #[derive(SystemDesc)]
 pub struct BallSystem;
