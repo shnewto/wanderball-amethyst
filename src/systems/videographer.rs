@@ -1,19 +1,16 @@
 use amethyst::{
     core::transform::Transform,
     derive::SystemDesc,
-    ecs::{
-        Join, Read, ReadStorage, System, SystemData,
-        WriteStorage,
-    },
+    ecs::{Join, Read, ReadStorage, System, SystemData, WriteStorage},
     input::{InputHandler, StringBindings},
     renderer::Camera,
 };
 
+use crate::components::ball::Ball;
+use crate::components::videographer::Videographer;
 use crate::config::WanderballConfig;
 use crate::side::Side;
-use crate::components::ball::Ball;
 use crate::util::{point_near_edge_of_rect, Point};
-use crate::components::videographer::Videographer;
 
 #[derive(SystemDesc, Default)]
 pub struct VideographerSystem;

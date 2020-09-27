@@ -4,7 +4,7 @@
     ball_radius: 2.0,
     path_height: 8.0, 
     path_width: 24.0,
-    path_length: 100,
+    path_length: 10000,
     movement_speed: 1.0,
     fast_movement_speed: 10.0,
     zoom_factor: 10.0,

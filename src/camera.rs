@@ -13,10 +13,19 @@ pub fn initialize_camera(world: &mut World, parent: Entity) {
         (config.view_height, config.view_width)
     };
 
+    let camera = Camera::orthographic(
+        -view_width / 2.0,
+        view_width / 2.0,
+        -view_height / 2.0,
+        view_height / 2.0,
+        1.0,
+        4.0,
+    );
+
     world
         .create_entity()
         .with(Transform::default())
-        .with(Camera::standard_2d(view_width, view_height))
+        .with(camera)
         .with(Parent { entity: parent })
         .build();
 }

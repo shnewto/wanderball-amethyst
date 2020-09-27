@@ -17,6 +17,7 @@ use amethyst::{
 
 mod audio;
 mod bundle;
+mod camera;
 mod components;
 mod config;
 mod side;
@@ -25,7 +26,6 @@ mod start;
 mod systems;
 mod util;
 mod wanderball;
-mod camera;
 
 use crate::audio::Music;
 use crate::bundle::WanderballBundle;
@@ -45,6 +45,7 @@ pub fn run() -> amethyst::Result<()> {
         InputBundle::<StringBindings>::new().with_bindings_from_file(binding_path)?;
 
     let game_data = GameDataBuilder::default()
+        .with_bundle(TransformBundle::new())?
         .with_bundle(
             RenderingBundle::<DefaultBackend>::new()
                 .with_plugin(
@@ -54,7 +55,6 @@ pub fn run() -> amethyst::Result<()> {
                 .with_plugin(RenderUi::default())
                 .with_plugin(RenderFlat2D::default()),
         )?
-        .with_bundle(TransformBundle::new())?
         .with_bundle(input_bundle)?
         .with_bundle(WanderballBundle)?
         .with_bundle(UiBundle::<StringBindings>::new())?
