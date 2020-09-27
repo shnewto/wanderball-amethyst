@@ -5,7 +5,7 @@ use amethyst::{
 };
 
 use crate::components::{
-    path::{Path, PathTile},
+    path::{Path, PathSegment},
     videographer::Videographer,
 };
 
@@ -25,21 +25,21 @@ impl<'s> System<'s> for PathSystem {
 }
 
 #[derive(SystemDesc)]
-pub struct PathTileSystem;
+pub struct PathSegmentSystem;
 
-impl<'s> System<'s> for PathTileSystem {
+impl<'s> System<'s> for PathSegmentSystem {
     type SystemData = (
         Entities<'s>,
         WriteStorage<'s, Hidden>,
         ReadStorage<'s, Transform>,
-        ReadStorage<'s, PathTile>,
+        ReadStorage<'s, PathSegment>,
         ReadStorage<'s, Videographer>,
         Read<'s, WanderballConfig>,
     );
 
     fn run(
         &mut self,
-        (entities, mut hidden_things, transforms, tiles, videographers, _config): Self::SystemData,
+        (entities, mut hidden_things, transforms, segments, videographers, _config): Self::SystemData,
     ) {
         let mut curr_view_height = 0.0;
         let mut curr_view_width = 0.0;
@@ -59,9 +59,9 @@ impl<'s> System<'s> for PathTileSystem {
         let max_y_val = vy + curr_view_height;
         let min_y_max = vy - curr_view_height;
 
-        for (tile, entity) in (&tiles, &entities).join() {
-            let x = tile.x;
-            let y = tile.y;
+        for (_, entity, transform) in (&segments, &entities, &transforms).join() {
+            let x = transform.translation().x;
+            let y = transform.translation().y;
             if x > max_x_val || x < min_x_val || y > max_y_val || y < min_y_max {
                 let _ = hidden_things.insert(entity, Hidden);
             } else {

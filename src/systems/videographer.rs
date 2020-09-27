@@ -56,8 +56,8 @@ impl<'s> System<'s> for VideographerSystem {
 
         let mut height: Option<f32> = None;
         let mut width: Option<f32> = None;
-        let mut new_view_height = 0.0;
-        let mut new_view_width = 0.0;
+        let mut new_view_height;
+        let mut new_view_width;
 
         for (_, camera) in (&transforms, &mut cameras).join() {
             if let Some(zoom_input) = input.axis_value("zoom") {
