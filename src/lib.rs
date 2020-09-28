@@ -3,7 +3,7 @@
 use amethyst::{
     audio::{AudioBundle, DjSystemDesc},
     config::Config,
-    core::transform::TransformBundle,
+    core::{transform::TransformBundle},
     input::{InputBundle, StringBindings},
     prelude::*,
     renderer::{
@@ -26,6 +26,7 @@ mod start;
 mod systems;
 mod util;
 mod wanderball;
+mod menu;
 
 use crate::audio::Music;
 use crate::bundle::WanderballBundle;

@@ -9,6 +9,7 @@ amethyst = "0.15.0"
 serde = "1.0.116"
 time = "0.2.21"
 rand = "0.7.3"
+log = "0.4.11"
 
 [features]
 empty = ["amethyst/empty"]
