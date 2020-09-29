@@ -1,6 +1,6 @@
 use amethyst::{
     core::{Hidden, Transform},
-    derive::SystemDesc,
+    derive::SystemDesc, 
     ecs::{Entities, Join, Read, ReadStorage, System, SystemData, WriteStorage},
 };
 

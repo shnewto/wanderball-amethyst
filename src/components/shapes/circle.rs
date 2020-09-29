@@ -1,21 +1,23 @@
 use amethyst::ecs::{Component, VecStorage};
+use serde::{Serialize, Deserialize};
 
-pub struct Size {
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct Circle {
     pub radius: f32,
 }
 
-impl Component for Size {
+impl Component for Circle {
     type Storage = VecStorage<Self>;
 }
 
-impl Size {
-    pub fn new(radius: f32) -> Size {
-        Size { radius}
+impl Circle {
+    pub fn new(radius: f32) -> Circle {
+        Circle { radius}
     }
 }
 
-impl Default for Size {
+impl Default for Circle {
     fn default() -> Self {
-        Size { radius: 0.0 }
+        Circle { radius: 0.0 }
     }
 }

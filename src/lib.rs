@@ -5,7 +5,7 @@ use amethyst::{
     config::Config,
     core::{transform::TransformBundle},
     input::{InputBundle, StringBindings},
-    prelude::*,
+    prelude::{GameDataBuilder, Application},
     renderer::{
         plugins::{RenderFlat2D, RenderToWindow},
         types::DefaultBackend,
@@ -22,16 +22,16 @@ mod components;
 mod config;
 mod side;
 mod spritesheet;
-mod start;
 mod systems;
 mod util;
-mod wanderball;
-mod menu;
+mod states;
+mod resources;
+
 
 use crate::audio::Music;
 use crate::bundle::WanderballBundle;
 use crate::config::WanderballConfig;
-use crate::start::StartScreen;
+use crate::states::start::StartScreen;
 
 pub fn run() -> amethyst::Result<()> {
     amethyst::start_logger(Default::default());

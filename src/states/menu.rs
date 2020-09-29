@@ -7,6 +7,9 @@ use amethyst::{
 };
 use log;
 
+use crate::states::saving::Saving;
+use crate::states::loading::Loading;
+
 const BUTTON_RESUME: &str = "resume";
 const BUTTON_SAVE: &str = "save";
 const BUTTON_LOAD: &str = "load";
@@ -22,8 +25,8 @@ pub struct Menu {
 }
 
 impl SimpleState for Menu {
-    fn on_start(&mut self, data: StateData<'_, GameData<'_, '_>>) {
-        let world = data.world;
+    fn on_start(&mut self, state_data: StateData<'_, GameData<'_, '_>>) {
+        let StateData { world, .. } = state_data;
 
         self.ui_root =
             Some(world.exec(|mut creator: UiCreator<'_>| creator.create("ui/menu.ron", ())));
@@ -75,11 +78,11 @@ impl SimpleState for Menu {
                 } 
                 if Some(target) == self.button_save {
                     log::info!("[Trans::None] save game");
-                    return Trans::None
+                    return Trans::Push(Box::new(Saving::default()))
                 } 
                 if Some(target) == self.button_load  {
                     log::info!("[Trans::None] load game");
-                    return Trans::None
+                    return Trans::Switch(Box::new(Loading::default()))
                 } 
                 if Some(target) == self.button_quit {
                     log::info!("[Trans::Quit] quit game");

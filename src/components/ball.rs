@@ -7,7 +7,8 @@ use amethyst::{
 };
 
 use crate::config::WanderballConfig;
-use crate::components::shapes::circle::Size;
+use crate::components::shapes::circle::Circle;
+use crate::resources::save::{BallRecord};
 
 #[derive(Default)]
 pub struct Ball;
@@ -16,7 +17,20 @@ impl Component for Ball {
     type Storage = VecStorage<Self>;
 }
 
-pub fn initialize_ball(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>) {
+pub fn load_ball(world: &mut World, balls: Vec<BallRecord>, sprite_sheet_handle: &Handle<SpriteSheet>) {
+    for ball in balls {
+        let sprite_render = SpriteRender::new(sprite_sheet_handle.clone(), 0);
+        world
+            .create_entity()
+            .with(sprite_render)
+            .with(Ball::default())
+            .with(ball.circle)
+            .with(ball.transform)
+            .build();           
+    }
+}
+
+pub fn initialize_ball(world: &mut World, sprite_sheet_handle: &Handle<SpriteSheet>) {
     let mut local_transform = Transform::default();
 
     let (ball_radius, view_height, view_width) = {
@@ -30,13 +44,13 @@ pub fn initialize_ball(world: &mut World, sprite_sheet_handle: Handle<SpriteShee
 
     local_transform.set_translation_xyz(x, y, z);
 
-    let sprite_render = SpriteRender::new(sprite_sheet_handle, 0);
+    let sprite_render = SpriteRender::new(sprite_sheet_handle.clone(), 0);
 
     world
         .create_entity()
         .with(sprite_render)
         .with(Ball::default())
-        .with(Size::new(ball_radius))
+        .with(Circle::new(ball_radius))
         .with(local_transform)
         .build();
 }

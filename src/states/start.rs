@@ -6,7 +6,8 @@ use amethyst::{
 };
 
 use crate::audio::initialize_audio;
-use crate::wanderball::Wanderball;
+use crate::states::game::Wanderball;
+use crate::states::loading::Loading;
 
 const BUTTON_START: &str = "start";
 const BUTTON_LOAD: &str = "load";
@@ -21,8 +22,8 @@ pub struct StartScreen {
 }
 
 impl SimpleState for StartScreen {
-    fn on_start(&mut self, data: StateData<'_, GameData<'_, '_>>) {
-        let world = data.world;
+    fn on_start(&mut self, state_data: StateData<'_, GameData<'_, '_>>) {
+        let StateData { world, .. } = state_data;
 
         self.ui_root =
             Some(world.exec(|mut creator: UiCreator<'_>| creator.create("ui/start.ron", ())));
@@ -33,7 +34,6 @@ impl SimpleState for StartScreen {
     fn update(&mut self, state_data: &mut StateData<'_, GameData<'_, '_>>) -> SimpleTrans {
         let StateData { world, .. } = state_data;
 
-        // "find" buttons once
         if self.button_start.is_none()
             || self.button_load.is_none()
             || self.button_quit.is_none()
@@ -71,7 +71,7 @@ impl SimpleState for StartScreen {
                 } 
                 if Some(target) == self.button_load  {
                     log::info!("[Trans::None] load game");
-                    return Trans::None
+                    return Trans::Switch(Box::new(Loading::default()))
                 } 
                 if Some(target) == self.button_quit {
                     log::info!("[Trans::Quit] quit game");
