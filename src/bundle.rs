@@ -4,7 +4,7 @@ use amethyst::{
     error::Error,
 };
 
-use crate::systems::{BallSystem, PathSystem, PathSegmentSystem, VideographerSystem};
+use crate::systems::{BallSystem, PathSegmentSystem, PathSystem, VideographerSystem};
 
 #[derive(Default)]
 pub struct WanderballBundle;

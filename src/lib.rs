@@ -3,9 +3,9 @@
 use amethyst::{
     audio::{AudioBundle, DjSystemDesc},
     config::Config,
-    core::{transform::TransformBundle},
+    core::transform::TransformBundle,
     input::{InputBundle, StringBindings},
-    prelude::{GameDataBuilder, Application},
+    prelude::{Application, GameDataBuilder},
     renderer::{
         plugins::{RenderFlat2D, RenderToWindow},
         types::DefaultBackend,
@@ -20,13 +20,12 @@ mod bundle;
 mod camera;
 mod components;
 mod config;
+mod resources;
 mod side;
 mod spritesheet;
+mod states;
 mod systems;
 mod util;
-mod states;
-mod resources;
-
 
 use crate::audio::Music;
 use crate::bundle::WanderballBundle;

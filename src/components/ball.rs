@@ -6,9 +6,9 @@ use amethyst::{
     renderer::{SpriteRender, SpriteSheet},
 };
 
-use crate::config::WanderballConfig;
 use crate::components::shapes::circle::Circle;
-use crate::resources::save::{BallRecord};
+use crate::config::WanderballConfig;
+use crate::resources::save::BallRecord;
 
 #[derive(Default)]
 pub struct Ball;
@@ -17,7 +17,11 @@ impl Component for Ball {
     type Storage = VecStorage<Self>;
 }
 
-pub fn load_ball(world: &mut World, balls: Vec<BallRecord>, sprite_sheet_handle: &Handle<SpriteSheet>) {
+pub fn load_ball(
+    world: &mut World,
+    balls: Vec<BallRecord>,
+    sprite_sheet_handle: &Handle<SpriteSheet>,
+) {
     for ball in balls {
         let sprite_render = SpriteRender::new(sprite_sheet_handle.clone(), 0);
         world
@@ -26,7 +30,7 @@ pub fn load_ball(world: &mut World, balls: Vec<BallRecord>, sprite_sheet_handle:
             .with(Ball::default())
             .with(ball.circle)
             .with(ball.transform)
-            .build();           
+            .build();
     }
 }
 

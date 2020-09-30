@@ -1,17 +1,18 @@
 use crate::audio::start_audio;
 use crate::camera::initialize_camera;
-use crate::components::ball::{initialize_ball, load_ball};
-use crate::components::path::{initialize_path, load_path};
-use crate::components::videographer::initialize_videographer;
+use crate::components::ball::{initialize_ball, load_ball, Ball};
+use crate::components::path::{initialize_path, load_path, PathSegment};
+use crate::components::shapes::{circle::Circle, rectangle::Rectangle};
+use crate::components::videographer::{initialize_videographer, Videographer};
+use crate::resources::save::{BallRecord, GameRecord, PathSegmentRecord};
 use crate::spritesheet;
+use crate::states::menu::Menu;
 use amethyst::{
     input::{is_close_requested, is_key_down},
     prelude::*,
-    winit::{VirtualKeyCode},
+    renderer::Camera,
+    winit::VirtualKeyCode,
 };
-use crate::components::shapes::{circle::Circle, rectangle::Rectangle};
-use crate::states::menu::Menu;
-use crate::resources::save::{GameRecord, PathSegmentRecord, BallRecord};
 
 #[derive(Default)]
 pub struct Wanderball;
@@ -31,15 +32,18 @@ impl SimpleState for Wanderball {
         let mut record_elements: Option<(Vec<BallRecord>, Vec<PathSegmentRecord>)> = None;
 
         if let Some(game_record) = world.try_fetch::<GameRecord>() {
-            record_elements = Some(((*game_record.balls).to_vec(), (*game_record.path_segments).to_vec()))
+            record_elements = Some((
+                (*game_record.balls).to_vec(),
+                (*game_record.path_segments).to_vec(),
+            ))
         }
 
         if let Some((balls, segments)) = record_elements {
             load_ball(world, balls, &sprite_sheet_handle);
-            load_path(world, segments, &sprite_sheet_handle); 
+            load_path(world, segments, &sprite_sheet_handle);
         } else {
             initialize_ball(world, &sprite_sheet_handle);
-            initialize_path(world, &sprite_sheet_handle); 
+            initialize_path(world, &sprite_sheet_handle);
         }
     }
 
@@ -63,6 +67,13 @@ impl SimpleState for Wanderball {
             _ => Trans::None,
         }
     }
+
+    fn on_stop(&mut self, state_data: StateData<GameData>) {
+        let StateData { world, .. } = state_data;
+        world.write_storage::<Ball>().clear();
+        world.write_storage::<PathSegment>().clear();
+        world.write_storage::<Videographer>().clear();
+        world.write_storage::<Camera>().clear();
+        world.delete_all();
+    }
 }
-
-

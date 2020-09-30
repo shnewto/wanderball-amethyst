@@ -1,5 +1,5 @@
 use amethyst::ecs::{Component, VecStorage};
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Rectangle {
@@ -19,6 +19,9 @@ impl Rectangle {
 
 impl Default for Rectangle {
     fn default() -> Self {
-        Rectangle { width: 0.0, height: 0.0 }
+        Rectangle {
+            width: 0.0,
+            height: 0.0,
+        }
     }
 }

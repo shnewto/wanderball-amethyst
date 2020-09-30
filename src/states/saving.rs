@@ -1,12 +1,20 @@
 use amethyst::{
+    core::Transform,
     ecs::{Entity, Join},
     prelude::*,
-    core::Transform,
 };
 
-use std::{io::Write, path::Path, fs::{create_dir, File}};
-use crate::resources::save::{GameRecord, BallRecord, PathSegmentRecord};
-use crate::components::{shapes::{ circle::Circle, rectangle::Rectangle },path::PathSegment, ball::Ball};
+use crate::components::{
+    ball::Ball,
+    path::PathSegment,
+    shapes::{circle::Circle, rectangle::Rectangle},
+};
+use crate::resources::save::{BallRecord, GameRecord, PathSegmentRecord};
+use std::{
+    fs::{create_dir, File},
+    io::Write,
+    path::Path,
+};
 
 #[derive(Default, Debug)]
 pub struct Saving {
@@ -27,12 +35,12 @@ impl SimpleState for Saving {
         if let Ok(record) = serde_json::to_string(&game_record) {
             let save_dir = Path::new(".save");
             let save_file_path = save_dir.join("wanderball-save.json");
-    
+
             if save_dir.exists() {
                 if let Ok(mut f) = File::create(save_file_path) {
                     let _ = f.write_all(record.as_bytes());
                 }
-            } else { 
+            } else {
                 if let Ok(_) = create_dir(save_dir) {
                     if let Ok(mut f) = File::create(save_file_path) {
                         let _ = f.write_all(record.as_bytes());
@@ -44,7 +52,7 @@ impl SimpleState for Saving {
 
     fn update(&mut self, _state_data: &mut StateData<'_, GameData<'_, '_>>) -> SimpleTrans {
         Trans::Pop
-    }     
+    }
 }
 
 fn build_save(world: &mut World) -> GameRecord {
@@ -58,18 +66,27 @@ fn build_save(world: &mut World) -> GameRecord {
     let mut path_segments: Vec<PathSegmentRecord> = vec![];
 
     for (_ball, circle, transform) in (&ball_storage, &circle_storage, &transform_storage).join() {
-        balls.push(BallRecord{
+        balls.push(BallRecord {
             transform: transform.clone(),
             circle: circle.clone(),
         })
     }
 
-    for (_segment, rectangle, transform) in (&path_segment_storage, &rectangle_storage, &transform_storage).join() {
-        path_segments.push(PathSegmentRecord{
+    for (_segment, rectangle, transform) in (
+        &path_segment_storage,
+        &rectangle_storage,
+        &transform_storage,
+    )
+        .join()
+    {
+        path_segments.push(PathSegmentRecord {
             transform: transform.clone(),
             rectangle: rectangle.clone(),
         })
     }
 
-    GameRecord { path_segments, balls }
+    GameRecord {
+        path_segments,
+        balls,
+    }
 }

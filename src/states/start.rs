@@ -1,8 +1,8 @@
 use amethyst::{
     ecs::prelude::Entity,
-    input::{is_close_requested},
+    input::is_close_requested,
     prelude::*,
-    ui::{UiCreator, UiEvent, UiFinder, UiEventType},
+    ui::{UiCreator, UiEvent, UiEventType, UiFinder},
 };
 
 use crate::audio::initialize_audio;
@@ -18,7 +18,7 @@ pub struct StartScreen {
     ui_root: Option<Entity>,
     button_start: Option<Entity>,
     button_load: Option<Entity>,
-    button_quit: Option<Entity>,  
+    button_quit: Option<Entity>,
 }
 
 impl SimpleState for StartScreen {
@@ -34,10 +34,7 @@ impl SimpleState for StartScreen {
     fn update(&mut self, state_data: &mut StateData<'_, GameData<'_, '_>>) -> SimpleTrans {
         let StateData { world, .. } = state_data;
 
-        if self.button_start.is_none()
-            || self.button_load.is_none()
-            || self.button_quit.is_none()
-        {
+        if self.button_start.is_none() || self.button_load.is_none() || self.button_quit.is_none() {
             world.exec(|ui_finder: UiFinder<'_>| {
                 self.button_start = ui_finder.find(BUTTON_START);
                 self.button_load = ui_finder.find(BUTTON_LOAD);
@@ -46,7 +43,7 @@ impl SimpleState for StartScreen {
         }
 
         Trans::None
-    } 
+    }
 
     fn handle_event(
         &mut self,
@@ -67,19 +64,19 @@ impl SimpleState for StartScreen {
             }) => {
                 if Some(target) == self.button_start {
                     log::info!("[Trans::None] start game");
-                    return Trans::Switch(Box::new(Wanderball::default()))
-                } 
-                if Some(target) == self.button_load  {
+                    return Trans::Switch(Box::new(Wanderball::default()));
+                }
+                if Some(target) == self.button_load {
                     log::info!("[Trans::None] load game");
-                    return Trans::Switch(Box::new(Loading::default()))
-                } 
+                    return Trans::Switch(Box::new(Loading::default()));
+                }
                 if Some(target) == self.button_quit {
                     log::info!("[Trans::Quit] quit game");
-                    return Trans::Quit
-                } 
+                    return Trans::Quit;
+                }
 
                 Trans::None
-            }            
+            }
             _ => Trans::None,
         }
     }

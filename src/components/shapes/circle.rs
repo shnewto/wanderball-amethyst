@@ -1,5 +1,5 @@
 use amethyst::ecs::{Component, VecStorage};
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Circle {
@@ -12,7 +12,7 @@ impl Component for Circle {
 
 impl Circle {
     pub fn new(radius: f32) -> Circle {
-        Circle { radius}
+        Circle { radius }
     }
 }
 

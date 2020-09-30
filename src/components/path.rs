@@ -8,9 +8,9 @@ use amethyst::{
 
 use rand::Rng;
 
-use crate::config::WanderballConfig;
 use crate::components::shapes::rectangle::Rectangle;
-use crate::resources::save::{PathSegmentRecord};
+use crate::config::WanderballConfig;
+use crate::resources::save::PathSegmentRecord;
 
 #[derive(Default)]
 pub struct PathSegment;
@@ -31,16 +31,20 @@ const LEFT: u8 = 1;
 const DOWN: u8 = 2;
 const RIGHT: u8 = 3;
 
-pub fn load_path(world: &mut World, path_segments: Vec<PathSegmentRecord>, sprite_sheet_handle: &Handle<SpriteSheet>) {
+pub fn load_path(
+    world: &mut World,
+    path_segments: Vec<PathSegmentRecord>,
+    sprite_sheet_handle: &Handle<SpriteSheet>,
+) {
     for segment in path_segments {
         let segment_render = SpriteRender::new(sprite_sheet_handle.clone(), 1);
         world
-        .create_entity()
-        .with(segment_render)
-        .with(PathSegment)
-        .with(segment.rectangle)
-        .with(segment.transform)
-        .build();
+            .create_entity()
+            .with(segment_render)
+            .with(PathSegment)
+            .with(segment.rectangle)
+            .with(segment.transform)
+            .build();
     }
 }
 

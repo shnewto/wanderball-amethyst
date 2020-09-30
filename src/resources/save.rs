@@ -1,9 +1,7 @@
-use amethyst::{
-    core::Transform,
-};
-use crate::components::shapes::rectangle::Rectangle; 
-use crate::components::shapes::circle::Circle; 
-use serde::{Serialize, Deserialize};
+use crate::components::shapes::circle::Circle;
+use crate::components::shapes::rectangle::Rectangle;
+use amethyst::core::Transform;
+use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct PathSegmentRecord {

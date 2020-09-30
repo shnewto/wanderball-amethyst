@@ -1,14 +1,16 @@
 use amethyst::{
+    ecs::prelude::Entity,
     input::{is_close_requested, is_key_down},
-    ui::{UiEventType, UiCreator, UiEvent, UiFinder},
-    winit::{ VirtualKeyCode},
-    prelude::{GameData, Trans, StateData, SimpleTrans, StateEvent, SimpleState, WorldExt},
-    ecs::prelude::{Entity},
+    prelude::{GameData, SimpleState, SimpleTrans, StateData, StateEvent, Trans, WorldExt},
+    shrev::EventChannel,
+    ui::{UiCreator, UiEvent, UiEventType, UiFinder},
+    winit::VirtualKeyCode,
+    TransEvent,
 };
 use log;
 
-use crate::states::saving::Saving;
 use crate::states::loading::Loading;
+use crate::states::saving::Saving;
 
 const BUTTON_RESUME: &str = "resume";
 const BUTTON_SAVE: &str = "save";
@@ -21,7 +23,7 @@ pub struct Menu {
     button_resume: Option<Entity>,
     button_save: Option<Entity>,
     button_load: Option<Entity>,
-    button_quit: Option<Entity>,    
+    button_quit: Option<Entity>,
 }
 
 impl SimpleState for Menu {
@@ -50,12 +52,11 @@ impl SimpleState for Menu {
         }
 
         Trans::None
-    }    
-
+    }
 
     fn handle_event(
         &mut self,
-        _: StateData<'_, GameData<'_, '_>>,
+        state_data: StateData<'_, GameData<'_, '_>>,
         event: StateEvent,
     ) -> SimpleTrans {
         match event {
@@ -74,20 +75,29 @@ impl SimpleState for Menu {
             }) => {
                 if Some(target) == self.button_resume {
                     log::info!("[Trans::Pop] resuming wanderball");
-                    return Trans::Pop
-                } 
+                    return Trans::Pop;
+                }
                 if Some(target) == self.button_save {
                     log::info!("[Trans::None] save game");
-                    return Trans::Push(Box::new(Saving::default()))
-                } 
-                if Some(target) == self.button_load  {
+                    return Trans::Push(Box::new(Saving::default()));
+                }
+                if Some(target) == self.button_load {
+                    let mut state_transition_event_channel = state_data
+                        .world
+                        .write_resource::<EventChannel<TransEvent<GameData, StateEvent>>>();
+
                     log::info!("[Trans::None] load game");
-                    return Trans::Switch(Box::new(Loading::default()))
-                } 
+                    // this allows us to first 'Pop' the menu and get us to the game state below it. then when we switch, the old game can clean up it's resources in the on_stop handler before we start a new game.
+                    state_transition_event_channel.single_write(Box::new(|| Trans::Pop));
+                    state_transition_event_channel
+                        .single_write(Box::new(|| Trans::Switch(Box::new(Loading::default()))));
+
+                    return Trans::None;
+                }
                 if Some(target) == self.button_quit {
                     log::info!("[Trans::Quit] quit game");
-                    return Trans::Quit
-                } 
+                    return Trans::Quit;
+                }
                 Trans::None
             }
             _ => Trans::None,

@@ -1,12 +1,8 @@
-use amethyst::{
-    ecs::{Entity},
-    prelude::*,
-};
+use amethyst::{ecs::Entity, prelude::*};
 
-use std::{io::{Read}, path::Path, fs::{File}};
+use crate::resources::save::GameRecord;
 use crate::states::game::Wanderball;
-use crate::resources::save::{GameRecord};
-
+use std::{fs::File, io::Read, path::Path};
 
 #[derive(Default, Debug)]
 pub struct Loading {
@@ -32,5 +28,5 @@ impl SimpleState for Loading {
 
     fn update(&mut self, _state_data: &mut StateData<'_, GameData<'_, '_>>) -> SimpleTrans {
         Trans::Switch(Box::new(Wanderball::default()))
-    }     
+    }
 }
