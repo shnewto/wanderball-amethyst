@@ -22,7 +22,7 @@ impl SimpleState for Loading {
             let mut contents = String::new();
             let _ = f.read_to_string(&mut contents);
             game_record = serde_json::from_str(&contents).unwrap();
-            world.insert(game_record);
+            world.insert(Some(game_record));
         }
     }
 

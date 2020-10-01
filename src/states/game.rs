@@ -28,10 +28,12 @@ impl SimpleState for Wanderball {
 
         // maybe load game logic 
         let mut game_record: Option<GameRecord> = None;
-        if let Some(record) = world.try_fetch::<GameRecord>() {
-            game_record = Some((*record).clone());
+        if let Some(maybe_record) = world.try_fetch::<Option<GameRecord>>() {
+            game_record = (*maybe_record).clone();
         }
 
+        // try to load, if we can't... start a new game?
+        // should eventually report and prompt for what to do if this happens
         let videographer;
         if let Some(record) = game_record {
             load_path(world, record.path_segments, &sprite_sheet_handle);
@@ -44,8 +46,6 @@ impl SimpleState for Wanderball {
             videographer = initialize_videographer(world);
             initialize_camera(world, videographer); 
         }
-
-                   
 
         start_audio(world);        
     }

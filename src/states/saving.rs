@@ -70,34 +70,20 @@ impl SimpleState for Saving {
 fn build_save(world: &mut World) -> Option<GameRecord> {
     log::info!("collect comonent storages");
     let ball_storage = world.read_storage::<Ball>();
-    log::info!("collected ball_storage storage");
     let circle_storage = world.read_storage::<Circle>();
-    log::info!("collected circle_storage storage");
     let rectangle_storage = world.read_storage::<Rectangle>();
-    log::info!("collected rectangle_storage storage");
     let path_segment_storage = world.read_storage::<PathSegment>();
-    log::info!("collected path_segment_storage storage");
     let videographer_storage = world.read_storage::<Videographer>();
-    log::info!("collected videographer_storage storage");
     let camera_storage = world.read_storage::<Camera>();
-    log::info!("collected camera_storage storage");
     let transform_storage = world.read_storage::<Transform>();
-    log::info!("collected transform_storage storage");
-
     log::info!("collected all storages");
 
 
-    log::info!("init Vec<BallRecord>");
     let mut balls: Vec<BallRecord> = vec![];
-    log::info!("init Vec<PathSegmentRecord>");
     let mut path_segments: Vec<PathSegmentRecord> = vec![];
-    log::info!("init VideographerRecord");
     let mut videographer = VideographerRecord::default();
-    log::info!("init CameraRecord");
     let mut maybe_camera: Option<CameraRecord> = None;
-    log::info!("defaults created for game record"); 
 
-    log::info!("build BallRecord");
     for (_ball, circle, transform) in (&ball_storage, &circle_storage, &transform_storage).join() {
         balls.push(BallRecord {
             transform: transform.clone(),
@@ -105,7 +91,6 @@ fn build_save(world: &mut World) -> Option<GameRecord> {
         })
     }
 
-    log::info!("build PathSegmentRecord");
     for (_segment, rectangle, transform) in (
         &path_segment_storage,
         &rectangle_storage,
@@ -119,7 +104,6 @@ fn build_save(world: &mut World) -> Option<GameRecord> {
         })
     }
 
-    log::info!("build VideographerRecord");
     for (videographer_instance, transform) in (
         &videographer_storage,
         &transform_storage
@@ -132,7 +116,6 @@ fn build_save(world: &mut World) -> Option<GameRecord> {
         }
     }
 
-    log::info!("build CameraRecord");
     for (camera_instance, transform) in (
         &camera_storage,
         &transform_storage
@@ -144,8 +127,9 @@ fn build_save(world: &mut World) -> Option<GameRecord> {
             camera: camera_instance.clone(),
         })
     }
-    
+
     if let Some(camera) = maybe_camera {
+        log::info!("construct and return GameRecord");
         Some(GameRecord {
             path_segments,
             balls,
@@ -153,6 +137,7 @@ fn build_save(world: &mut World) -> Option<GameRecord> {
             camera, 
         })
     } else {
+        log::error!("couldn't find a camera!");
         None
     }
 }

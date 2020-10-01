@@ -31,10 +31,32 @@ Container(
                 press_text_color: (1.0, 1.0, 1.0, 1.0),
             )
         ),
+        Button(
+            transform: (
+                id: "restart",
+                y: 50.0,
+                z: 2.0,
+                width: 200.,
+                height: 50.,
+                tab_order: 1,
+                anchor: Middle,
+            ),
+            button: (
+                text: "restart",
+                font: File("font/square.ttf", ("TTF", ())),
+                font_size: 50.0,
+                normal_image: SolidColor(0.0, 0.0, 0.0, 1.),
+                hover_image: SolidColor(0.0, 0.0, 0.0, 1.),
+                press_image: SolidColor(0.0, 0.0, 0.0, 1.),
+                normal_text_color: (0.7, 0.7, 0.7, 1.0),
+                hover_text_color: (0.2, 0.2, 1.0, 1.0),
+                press_text_color: (1.0, 1.0, 1.0, 1.0),
+            )
+        ),        
        Button(
             transform: (
                 id: "save",
-                y: 50.0,
+                y: -50.0,
                 z: 2.0,
                 width: 200.,
                 height: 50.,
@@ -56,7 +78,7 @@ Container(
        Button(
             transform: (
                 id: "load",
-                y: -50.0,
+                y: -150.0,
                 z: 2.0,
                 width: 200.,
                 height: 50.,
@@ -78,7 +100,7 @@ Container(
        Button(
             transform: (
                 id: "quit",
-                y: -150.0,
+                y: -250.0,
                 z: 2.0,
                 width: 200.,
                 height: 50.,
