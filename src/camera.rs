@@ -1,11 +1,11 @@
+use crate::config::WanderballConfig;
+use crate::resources::save::CameraRecord;
 use amethyst::{
     core::{transform::Transform, Parent},
     ecs::{Entity, World},
     prelude::*,
     renderer::Camera,
 };
-use crate::resources::save::CameraRecord;
-use crate::config::WanderballConfig;
 
 pub fn load_camera(world: &mut World, camera_record: CameraRecord, parent: Entity) {
     world
@@ -30,7 +30,6 @@ pub fn initialize_camera(world: &mut World, parent: Entity) {
         1.0,
         4.0,
     );
-
 
     world
         .create_entity()
