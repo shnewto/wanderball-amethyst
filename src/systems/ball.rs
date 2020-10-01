@@ -22,7 +22,6 @@ impl<'s> System<'s> for BallSystem {
     );
 
     fn run(&mut self, (mut transforms, balls, videographers, config, input): Self::SystemData) {
-
         let (mut curr_view_width, mut curr_view_height) = (0.0, 0.0);
         for (videographer, _) in (&videographers, &transforms).join() {
             curr_view_width = videographer.view_width;

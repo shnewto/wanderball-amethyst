@@ -8,17 +8,19 @@ use amethyst::{
 
 use rand::Rng;
 
+use crate::components::shapes::rectangle::Rectangle;
 use crate::config::WanderballConfig;
-use crate::components::shapes::rectangle::Size;
+use crate::resources::save::PathSegmentRecord;
+use serde::{Deserialize, Serialize};
 
-#[derive(Default)]
+#[derive(Serialize, Deserialize, Debug, Clone, Default)]
 pub struct PathSegment;
 
 impl Component for PathSegment {
     type Storage = VecStorage<Self>;
 }
 
-#[derive(Default)]
+#[derive(Serialize, Deserialize, Debug, Clone, Default)]
 pub struct Path;
 
 impl Component for Path {
@@ -30,7 +32,24 @@ const LEFT: u8 = 1;
 const DOWN: u8 = 2;
 const RIGHT: u8 = 3;
 
-pub fn initialize_path(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>) {
+pub fn load_path(
+    world: &mut World,
+    path_segments: Vec<PathSegmentRecord>,
+    sprite_sheet_handle: &Handle<SpriteSheet>,
+) {
+    for segment in path_segments {
+        let segment_render = SpriteRender::new(sprite_sheet_handle.clone(), 1);
+        world
+            .create_entity()
+            .with(segment_render)
+            .with(PathSegment)
+            .with(segment.rectangle)
+            .with(segment.transform)
+            .build();
+    }
+}
+
+pub fn initialize_path(world: &mut World, sprite_sheet_handle: &Handle<SpriteSheet>) {
     let (view_height, path_segment_height, path_segment_width, path_length) = {
         let config = &world.read_resource::<WanderballConfig>();
         (
@@ -46,7 +65,7 @@ pub fn initialize_path(world: &mut World, sprite_sheet_handle: Handle<SpriteShee
     let mut x = 0.0;
     let z: f32 = 0.0;
 
-    let segment_render = SpriteRender::new(sprite_sheet_handle, 1);
+    let segment_render = SpriteRender::new(sprite_sheet_handle.clone(), 1);
 
     let mut first_transform = Transform::default();
     first_transform.set_translation_xyz(x, y, z);
@@ -55,7 +74,7 @@ pub fn initialize_path(world: &mut World, sprite_sheet_handle: Handle<SpriteShee
         .create_entity()
         .with(segment_render.clone())
         .with(PathSegment)
-        .with(Size::new(path_segment_width, path_segment_height))
+        .with(Rectangle::new(path_segment_width, path_segment_height))
         .with(first_transform)
         .build();
 
@@ -150,7 +169,7 @@ pub fn initialize_path(world: &mut World, sprite_sheet_handle: Handle<SpriteShee
             .create_entity()
             .with(segment_render.clone())
             .with(PathSegment)
-            .with(Size::new(path_segment_width, path_segment_height))
+            .with(Rectangle::new(path_segment_width, path_segment_height))
             .with(next_transform)
             .with(Hidden)
             .build();
