@@ -4,8 +4,17 @@ use amethyst::{
     prelude::*,
     renderer::Camera,
 };
-
+use crate::resources::save::CameraRecord;
 use crate::config::WanderballConfig;
+
+pub fn load_camera(world: &mut World, camera_record: CameraRecord, parent: Entity) {
+    world
+        .create_entity()
+        .with(camera_record.transform.clone())
+        .with(camera_record.camera.clone())
+        .with(Parent { entity: parent })
+        .build();
+}
 
 pub fn initialize_camera(world: &mut World, parent: Entity) {
     let (view_height, view_width) = {
@@ -21,6 +30,7 @@ pub fn initialize_camera(world: &mut World, parent: Entity) {
         1.0,
         4.0,
     );
+
 
     world
         .create_entity()

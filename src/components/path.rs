@@ -11,15 +11,16 @@ use rand::Rng;
 use crate::components::shapes::rectangle::Rectangle;
 use crate::config::WanderballConfig;
 use crate::resources::save::PathSegmentRecord;
+use serde::{Deserialize, Serialize};
 
-#[derive(Default)]
+#[derive(Serialize, Deserialize, Debug, Clone, Default)]
 pub struct PathSegment;
 
 impl Component for PathSegment {
     type Storage = VecStorage<Self>;
 }
 
-#[derive(Default)]
+#[derive(Serialize, Deserialize, Debug, Clone, Default)]
 pub struct Path;
 
 impl Component for Path {

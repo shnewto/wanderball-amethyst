@@ -1,10 +1,10 @@
 use crate::audio::start_audio;
-use crate::camera::initialize_camera;
+use crate::camera::{initialize_camera, load_camera};
 use crate::components::ball::{initialize_ball, load_ball, Ball};
 use crate::components::path::{initialize_path, load_path, PathSegment};
 use crate::components::shapes::{circle::Circle, rectangle::Rectangle};
-use crate::components::videographer::{initialize_videographer, Videographer};
-use crate::resources::save::{BallRecord, GameRecord, PathSegmentRecord};
+use crate::components::videographer::{initialize_videographer, load_videographer, Videographer};
+use crate::resources::save::{GameRecord};
 use crate::spritesheet;
 use crate::states::menu::Menu;
 use amethyst::{
@@ -25,26 +25,29 @@ impl SimpleState for Wanderball {
         world.register::<Rectangle>();
 
         let sprite_sheet_handle = spritesheet::load_sprite_sheet(world);
-        let videographer = initialize_videographer(world);
-        initialize_camera(world, videographer);
-        start_audio(world);
 
-        let mut record_elements: Option<(Vec<BallRecord>, Vec<PathSegmentRecord>)> = None;
-
-        if let Some(game_record) = world.try_fetch::<GameRecord>() {
-            record_elements = Some((
-                (*game_record.balls).to_vec(),
-                (*game_record.path_segments).to_vec(),
-            ))
+        // maybe load game logic 
+        let mut game_record: Option<GameRecord> = None;
+        if let Some(record) = world.try_fetch::<GameRecord>() {
+            game_record = Some((*record).clone());
         }
 
-        if let Some((balls, segments)) = record_elements {
-            load_ball(world, balls, &sprite_sheet_handle);
-            load_path(world, segments, &sprite_sheet_handle);
+        let videographer;
+        if let Some(record) = game_record {
+            load_path(world, record.path_segments, &sprite_sheet_handle);
+            load_ball(world, record.balls, &sprite_sheet_handle);
+            videographer = load_videographer(world, record.videographer);
+            load_camera(world, record.camera, videographer); 
         } else {
-            initialize_ball(world, &sprite_sheet_handle);
             initialize_path(world, &sprite_sheet_handle);
+            initialize_ball(world, &sprite_sheet_handle);
+            videographer = initialize_videographer(world);
+            initialize_camera(world, videographer); 
         }
+
+                   
+
+        start_audio(world);        
     }
 
     fn handle_event(

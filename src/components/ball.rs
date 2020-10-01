@@ -9,8 +9,9 @@ use amethyst::{
 use crate::components::shapes::circle::Circle;
 use crate::config::WanderballConfig;
 use crate::resources::save::BallRecord;
+use serde::{Deserialize, Serialize};
 
-#[derive(Default)]
+#[derive(Serialize, Deserialize, Debug, Clone, Default)]
 pub struct Ball;
 
 impl Component for Ball {
