@@ -6,6 +6,7 @@ use amethyst::{
 };
 
 use crate::audio::initialize_audio;
+use crate::components::coordinate::CoordinateText;
 use crate::states::game::Wanderball;
 use crate::states::loading::Loading;
 
@@ -29,6 +30,10 @@ impl SimpleState for StartScreen {
             Some(world.exec(|mut creator: UiCreator<'_>| creator.create("ui/start.ron", ())));
 
         initialize_audio(world);
+        let noop_coordinates = world.create_entity().build();
+        world.insert(CoordinateText {
+            coordinates: noop_coordinates,
+        })
     }
 
     fn update(&mut self, state_data: &mut StateData<'_, GameData<'_, '_>>) -> SimpleTrans {

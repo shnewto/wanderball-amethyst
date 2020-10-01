@@ -12,6 +12,13 @@ pub struct WanderballConfig {
     pub fast_move_factor: f32,
     pub zoom_factor: f32,
     pub fast_zoom_factor: f32,
+    pub coord_display_font_size: f32,
+    pub coord_display_x: f32,
+    pub coord_display_y: f32,
+    pub coord_display_z: f32,
+    pub coord_display_width: f32,
+    pub coord_display_height: f32,
+    pub coord_display_color: [f32; 4],
 }
 
 impl Default for WanderballConfig {
@@ -27,6 +34,13 @@ impl Default for WanderballConfig {
             fast_move_factor: 1.0,
             zoom_factor: 50.0,
             fast_zoom_factor: 10.0,
+            coord_display_font_size: 10.0,
+            coord_display_x: 50.0,
+            coord_display_y: -50.0,
+            coord_display_z: 1.0,
+            coord_display_width: 1000.0,
+            coord_display_height: 10.0,
+            coord_display_color: [1.0, 1.0, 1.0, 1.0],
         }
     }
 }

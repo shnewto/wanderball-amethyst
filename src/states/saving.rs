@@ -11,7 +11,9 @@ use crate::components::{
     shapes::{circle::Circle, rectangle::Rectangle},
     videographer::Videographer,
 };
-use crate::resources::save::{BallRecord, GameRecord, PathSegmentRecord, VideographerRecord, CameraRecord};
+use crate::resources::save::{
+    BallRecord, CameraRecord, GameRecord, PathSegmentRecord, VideographerRecord,
+};
 use std::{
     fs::{create_dir, File},
     io::Write,
@@ -78,7 +80,6 @@ fn build_save(world: &mut World) -> Option<GameRecord> {
     let transform_storage = world.read_storage::<Transform>();
     log::info!("collected all storages");
 
-
     let mut balls: Vec<BallRecord> = vec![];
     let mut path_segments: Vec<PathSegmentRecord> = vec![];
     let mut videographer = VideographerRecord::default();
@@ -104,24 +105,14 @@ fn build_save(world: &mut World) -> Option<GameRecord> {
         })
     }
 
-    for (videographer_instance, transform) in (
-        &videographer_storage,
-        &transform_storage
-    )
-        .join()
-    {
+    for (videographer_instance, transform) in (&videographer_storage, &transform_storage).join() {
         videographer = VideographerRecord {
             transform: transform.clone(),
             videographer: videographer_instance.clone(),
         }
     }
 
-    for (camera_instance, transform) in (
-        &camera_storage,
-        &transform_storage
-    )
-        .join()
-    {
+    for (camera_instance, transform) in (&camera_storage, &transform_storage).join() {
         maybe_camera = Some(CameraRecord {
             transform: transform.clone(),
             camera: camera_instance.clone(),
@@ -133,8 +124,8 @@ fn build_save(world: &mut World) -> Option<GameRecord> {
         Some(GameRecord {
             path_segments,
             balls,
-            videographer, 
-            camera, 
+            videographer,
+            camera,
         })
     } else {
         log::error!("couldn't find a camera!");

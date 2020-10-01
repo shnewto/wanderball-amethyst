@@ -1,5 +1,8 @@
-use crate::components::{ videographer::Videographer, shapes::{ circle::Circle, rectangle::Rectangle}};
-use amethyst::{core::Transform, renderer::Camera,};
+use crate::components::{
+    shapes::{circle::Circle, rectangle::Rectangle},
+    videographer::Videographer,
+};
+use amethyst::{core::Transform, renderer::Camera};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -23,7 +26,7 @@ pub struct VideographerRecord {
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct CameraRecord {
     pub transform: Transform,
-    pub camera: Camera, 
+    pub camera: Camera,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]

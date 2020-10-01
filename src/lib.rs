@@ -56,8 +56,8 @@ pub fn run() -> amethyst::Result<()> {
                 .with_plugin(RenderFlat2D::default()),
         )?
         .with_bundle(input_bundle)?
-        .with_bundle(WanderballBundle)?
         .with_bundle(UiBundle::<StringBindings>::new())?
+        .with_bundle(WanderballBundle)?
         .with_bundle(AudioBundle::default())?
         .with_system_desc(
             DjSystemDesc::new(|music: &mut Music| music.music.next()),

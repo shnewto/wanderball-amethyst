@@ -9,4 +9,11 @@
     fast_move_factor: 10.0,
     zoom_factor: 50.0,
     fast_zoom_factor: 5.0,
+    coord_display_font_size: 20.0,
+    coord_display_x: 2.0,
+    coord_display_y: -50.0,
+    coord_display_z: 1.0,
+    coord_display_width: 250.0,
+    coord_display_height: 20.0,
+    coord_display_color: (1.0,1.0,1.0,1.0),    
 )

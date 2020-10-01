@@ -29,7 +29,6 @@ pub fn load_videographer(world: &mut World, videograhper_record: VideographerRec
         .build()
 }
 
-
 pub fn initialize_videographer(world: &mut World) -> Entity {
     let (view_height, view_width) = {
         let config = &world.read_resource::<WanderballConfig>();
