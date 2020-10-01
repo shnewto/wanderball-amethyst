@@ -5,9 +5,11 @@ use amethyst::{
 };
 
 use crate::config::WanderballConfig;
+use crate::resources::save::VideographerRecord;
+use serde::{Deserialize, Serialize};
 
 /// The entity that holds the camera and moves it when it needs to
-#[derive(Default)]
+#[derive(Serialize, Deserialize, Debug, Clone, Default)]
 pub struct Videographer {
     pub view_width: f32,
     pub view_height: f32,
@@ -18,6 +20,15 @@ pub struct Videographer {
 impl Component for Videographer {
     type Storage = VecStorage<Self>;
 }
+
+pub fn load_videographer(world: &mut World, videograhper_record: VideographerRecord) -> Entity {
+    world
+        .create_entity()
+        .with(videograhper_record.videographer.clone())
+        .with(videograhper_record.transform.clone())
+        .build()
+}
+
 
 pub fn initialize_videographer(world: &mut World) -> Entity {
     let (view_height, view_width) = {

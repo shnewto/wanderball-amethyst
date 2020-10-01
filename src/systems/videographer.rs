@@ -43,7 +43,7 @@ impl<'s> System<'s> for VideographerSystem {
             y: ball_y,
         };
 
-        let fast_zoom = input.action_is_down("fast_movement");        
+        let fast_zoom = input.action_is_down("fast_movement");
 
         let (mut curr_view_width, mut curr_view_height) = (0.0, 0.0);
         for (videographer, _) in (&videographers, &transforms).join() {
@@ -56,8 +56,8 @@ impl<'s> System<'s> for VideographerSystem {
 
         let mut height: Option<f32> = None;
         let mut width: Option<f32> = None;
-        let mut new_view_height = 0.0;
-        let mut new_view_width = 0.0;
+        let mut new_view_height;
+        let mut new_view_width;
 
         for (_, camera) in (&transforms, &mut cameras).join() {
             if let Some(zoom_input) = input.axis_value("zoom") {
@@ -71,7 +71,7 @@ impl<'s> System<'s> for VideographerSystem {
                     }
                     *camera = Camera::standard_2d(new_view_width, new_view_height);
                     height = Some(new_view_height);
-                    width =  Some(new_view_width);
+                    width = Some(new_view_width);
                 } else if zoom_input < 0.0 {
                     if let Some(true) = fast_zoom {
                         new_view_height = (curr_view_height + fast_zoom_factor).max(100.0);
@@ -82,7 +82,7 @@ impl<'s> System<'s> for VideographerSystem {
                     }
                     *camera = Camera::standard_2d(new_view_width, new_view_height);
                     height = Some(new_view_height);
-                    width =  Some(new_view_width);
+                    width = Some(new_view_width);
                 }
             }
         }

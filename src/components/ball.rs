@@ -6,22 +6,36 @@ use amethyst::{
     renderer::{SpriteRender, SpriteSheet},
 };
 
+use crate::components::shapes::circle::Circle;
 use crate::config::WanderballConfig;
+use crate::resources::save::BallRecord;
+use serde::{Deserialize, Serialize};
 
-pub struct Ball {
-    pub radius: f32,
-}
+#[derive(Serialize, Deserialize, Debug, Clone, Default)]
+pub struct Ball;
 
-impl Default for Ball {
-    fn default() -> Self {
-        Ball { radius: 2.0 }
-    }
-}
 impl Component for Ball {
     type Storage = VecStorage<Self>;
 }
 
-pub fn initialize_ball(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>) {
+pub fn load_ball(
+    world: &mut World,
+    balls: Vec<BallRecord>,
+    sprite_sheet_handle: &Handle<SpriteSheet>,
+) {
+    for ball in balls {
+        let sprite_render = SpriteRender::new(sprite_sheet_handle.clone(), 0);
+        world
+            .create_entity()
+            .with(sprite_render)
+            .with(Ball::default())
+            .with(ball.circle)
+            .with(ball.transform)
+            .build();
+    }
+}
+
+pub fn initialize_ball(world: &mut World, sprite_sheet_handle: &Handle<SpriteSheet>) {
     let mut local_transform = Transform::default();
 
     let (ball_radius, view_height, view_width) = {
@@ -29,20 +43,19 @@ pub fn initialize_ball(world: &mut World, sprite_sheet_handle: Handle<SpriteShee
         (config.ball_radius, config.view_height, config.view_width)
     };
 
-    local_transform.set_translation_xyz(
-        view_width - (view_width * 0.25),
-        view_height - (view_height * 0.75),
-        1.0,
-    );
+    let x = view_width - (view_width * 0.25);
+    let y = view_height - (view_height * 0.75);
+    let z = 1.0;
 
-    let sprite_render = SpriteRender::new(sprite_sheet_handle, 0);
+    local_transform.set_translation_xyz(x, y, z);
+
+    let sprite_render = SpriteRender::new(sprite_sheet_handle.clone(), 0);
 
     world
         .create_entity()
         .with(sprite_render)
-        .with(Ball {
-            radius: ball_radius,
-        })
+        .with(Ball::default())
+        .with(Circle::new(ball_radius))
         .with(local_transform)
         .build();
 }
