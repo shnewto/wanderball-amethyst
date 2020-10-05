@@ -11,7 +11,7 @@ pub fn load_camera(world: &mut World, camera_record: CameraRecord, parent: Entit
     world
         .create_entity()
         .with(camera_record.transform.clone())
-        .with(camera_record.camera.clone())
+        .with(camera_record.camera)
         .with(Parent { entity: parent })
         .build();
 }

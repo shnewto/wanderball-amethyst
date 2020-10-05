@@ -1,5 +1,5 @@
 use crate::components::{
-    shapes::{circle::Circle, rectangle::{Rectangle}},
+    shapes::{circle::Circle, rectangle::Rectangle},
     videographer::Videographer,
 };
 
