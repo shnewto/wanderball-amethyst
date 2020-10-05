@@ -1,6 +1,6 @@
+use crate::side::Side;
 use amethyst::ecs::{Component, VecStorage};
 use serde::{Deserialize, Serialize};
-use crate::side::Side;
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Rectangle {

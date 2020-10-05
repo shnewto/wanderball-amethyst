@@ -1,7 +1,8 @@
 use crate::components::{
-    shapes::{circle::Circle, rectangle::Rectangle},
+    shapes::{circle::Circle, rectangle::{Rectangle}},
     videographer::Videographer,
 };
+
 use amethyst::{core::Transform, renderer::Camera};
 use serde::{Deserialize, Serialize};
 

@@ -8,6 +8,7 @@ use amethyst::{
     ui::{Anchor, LineMode, TtfFormat, UiText, UiTransform},
 };
 use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default)]
 pub struct Coordinate {
@@ -25,7 +26,8 @@ pub struct CoordinateText {
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default)]
 pub struct Pedometer {
-    pub steps: f32,
+    pub steps: i32,
+    pub visited: HashMap<String, ()>,
 }
 
 impl Component for Pedometer {

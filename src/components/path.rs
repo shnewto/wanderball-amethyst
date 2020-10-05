@@ -179,11 +179,11 @@ pub fn initialize_path(world: &mut World, sprite_sheet_handle: &Handle<SpriteShe
         if choice == LEFT || choice == RIGHT {
             rectangle = Rectangle::new(path_segment_width, path_segment_height);
         } else {
-            // rotated so we flip width/height to make things easier when we're figuring out how to 
+            // rotated so we flip width/height to make things easier when we're figuring out how to
             // keep the ball on the path when we want to
             rectangle = Rectangle::new(path_segment_height, path_segment_width);
         }
-        
+
         world
             .create_entity()
             .with(segment_render.clone())
