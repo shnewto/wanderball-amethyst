@@ -13,15 +13,13 @@ use crate::components::{
     wanderdata::Pedometer,
 };
 use crate::resources::save::{
-    BallRecord, CameraRecord, GameRecord, PathSegmentRecord, VideographerRecord, PedometerRecord,
+    BallRecord, CameraRecord, GameRecord, PathSegmentRecord, PedometerRecord, VideographerRecord,
 };
 use std::{
     fs::{create_dir, File},
     io::Write,
     path::Path,
 };
-
-use log;
 
 #[derive(Default, Debug)]
 pub struct Saving {
@@ -52,12 +50,10 @@ impl SimpleState for Saving {
                         let _ = f.write_all(record.as_bytes());
                         log::info!("serialized save");
                     }
-                } else {
-                    if let Ok(_) = create_dir(save_dir) {
-                        if let Ok(mut f) = File::create(save_file_path) {
-                            let _ = f.write_all(record.as_bytes());
-                            log::info!("serialized save");
-                        }
+                } else if create_dir(save_dir).is_ok() {
+                    if let Ok(mut f) = File::create(save_file_path) {
+                        let _ = f.write_all(record.as_bytes());
+                        log::info!("serialized save");
                     }
                 }
             }
@@ -115,13 +111,11 @@ fn build_save(world: &mut World) -> Option<GameRecord> {
     }
 
     if let Some(pedometer_resource) = world.try_fetch::<Pedometer>() {
-
-        pedometer = PedometerRecord{
+        pedometer = PedometerRecord {
             steps: pedometer_resource.steps,
             visited: pedometer_resource.visited.clone(),
         };
-    } 
-
+    }
 
     for (camera_instance, transform) in (&camera_storage, &transform_storage).join() {
         maybe_camera = Some(CameraRecord {
@@ -129,7 +123,6 @@ fn build_save(world: &mut World) -> Option<GameRecord> {
             camera: camera_instance.clone(),
         })
     }
-
 
     if let Some(camera) = maybe_camera {
         log::info!("construct and return GameRecord");

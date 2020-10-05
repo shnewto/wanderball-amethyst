@@ -7,7 +7,6 @@ use amethyst::{
     winit::VirtualKeyCode,
     TransEvent,
 };
-use log;
 
 use crate::resources::save::GameRecord;
 use crate::states::game::Wanderball;

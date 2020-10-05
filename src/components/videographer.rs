@@ -25,7 +25,7 @@ pub fn load_videographer(world: &mut World, videograhper_record: VideographerRec
     world
         .create_entity()
         .with(videograhper_record.videographer.clone())
-        .with(videograhper_record.transform.clone())
+        .with(videograhper_record.transform)
         .build()
 }
 
@@ -36,8 +36,8 @@ pub fn initialize_videographer(world: &mut World) -> Entity {
     };
 
     let videographer = Videographer {
-        view_height: view_height,
-        view_width: view_width,
+        view_height,
+        view_width,
         view_x: view_width * 0.5,
         view_y: view_height * 0.5,
     };

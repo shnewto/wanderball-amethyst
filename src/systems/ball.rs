@@ -8,7 +8,7 @@ use amethyst::{
 
 use crate::components::{
     ball::Ball,
-    shapes::{rectangle::{point_in_rect}},
+    shapes::rectangle::point_in_rect,
     wanderdata::{Pedometer, PedometerText},
 };
 
@@ -69,7 +69,11 @@ impl<'s> System<'s> for BallSystem {
                         ) {
                             transform.set_translation_x(new_x);
 
-                            let point = format!("{}{}", segment.transform.translation().x, segment.transform.translation().y);
+                            let point = format!(
+                                "{}{}",
+                                segment.transform.translation().x,
+                                segment.transform.translation().y
+                            );
 
                             if !pedometer.visited.contains_key(&point) {
                                 pedometer.steps += 1;
@@ -96,7 +100,11 @@ impl<'s> System<'s> for BallSystem {
                         ) {
                             transform.set_translation_y(new_y);
 
-                            let point = format!("{}{}", segment.transform.translation().x, segment.transform.translation().y);
+                            let point = format!(
+                                "{}{}",
+                                segment.transform.translation().x,
+                                segment.transform.translation().y
+                            );
 
                             if !pedometer.visited.contains_key(&point) {
                                 pedometer.steps += 1;

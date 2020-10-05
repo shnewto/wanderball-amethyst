@@ -10,7 +10,6 @@ use amethyst::{
 };
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
-use log;
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default)]
 pub struct Coordinate {
@@ -95,7 +94,7 @@ pub fn init_coordinates(world: &mut World) {
         .create_entity()
         .with(coordinate_transform)
         .with(UiText::new(
-            font.clone(),
+            font,
             format!("({},{})", ball_x.to_string(), ball_y.to_string()),
             wanderdata_display_color,
             wanderdata_display_font_size,
@@ -106,7 +105,6 @@ pub fn init_coordinates(world: &mut World) {
 
     world.insert(CoordinateText { coordinates });
 }
-
 
 pub fn load_pedometer(world: &mut World, pedometer_record: PedometerRecord) {
     let (
@@ -147,13 +145,12 @@ pub fn load_pedometer(world: &mut World, pedometer_record: PedometerRecord) {
         wanderdata_display_width,
         wanderdata_display_height,
     );
-    
 
     let steps = world
         .create_entity()
         .with(pedometer_transform)
         .with(UiText::new(
-            font.clone(),
+            font,
             format!("(path steps: {})", pedometer_record.steps),
             wanderdata_display_color,
             wanderdata_display_font_size,
@@ -164,11 +161,11 @@ pub fn load_pedometer(world: &mut World, pedometer_record: PedometerRecord) {
 
     world.insert(PedometerText { steps });
 
-    log::info!("pedometer - {:?}", pedometer_record);
-
-    world.insert(Pedometer{ steps: pedometer_record.steps, visited: pedometer_record.visited })
+    world.insert(Pedometer {
+        steps: pedometer_record.steps,
+        visited: pedometer_record.visited,
+    })
 }
-
 
 pub fn init_pedometer(world: &mut World) {
     let (
@@ -212,9 +209,9 @@ pub fn init_pedometer(world: &mut World) {
 
     let steps = world
         .create_entity()
-        .with(pedometer_transform.clone())
+        .with(pedometer_transform)
         .with(UiText::new(
-            font.clone(),
+            font,
             format!("(path steps: {})", 0.0),
             wanderdata_display_color,
             wanderdata_display_font_size,
