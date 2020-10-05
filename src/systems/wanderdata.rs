@@ -6,7 +6,7 @@ use amethyst::{
 };
 
 use crate::components::ball::Ball;
-use crate::components::coordinate::{Coordinate, CoordinateText};
+use crate::components::wanderdata::{Coordinate, CoordinateText};
 
 #[derive(SystemDesc)]
 pub struct CoordinateSystem;

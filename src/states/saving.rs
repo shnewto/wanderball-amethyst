@@ -10,9 +10,10 @@ use crate::components::{
     path::PathSegment,
     shapes::{circle::Circle, rectangle::Rectangle},
     videographer::Videographer,
+    wanderdata::Pedometer,
 };
 use crate::resources::save::{
-    BallRecord, CameraRecord, GameRecord, PathSegmentRecord, VideographerRecord,
+    BallRecord, CameraRecord, GameRecord, PathSegmentRecord, VideographerRecord, PedometerRecord,
 };
 use std::{
     fs::{create_dir, File},
@@ -83,6 +84,7 @@ fn build_save(world: &mut World) -> Option<GameRecord> {
     let mut balls: Vec<BallRecord> = vec![];
     let mut path_segments: Vec<PathSegmentRecord> = vec![];
     let mut videographer = VideographerRecord::default();
+    let mut pedometer = PedometerRecord::default();
     let mut maybe_camera: Option<CameraRecord> = None;
 
     for (_ball, circle, transform) in (&ball_storage, &circle_storage, &transform_storage).join() {
@@ -112,12 +114,22 @@ fn build_save(world: &mut World) -> Option<GameRecord> {
         }
     }
 
+    if let Some(pedometer_resource) = world.try_fetch::<Pedometer>() {
+
+        pedometer = PedometerRecord{
+            steps: pedometer_resource.steps,
+            visited: pedometer_resource.visited.clone(),
+        };
+    } 
+
+
     for (camera_instance, transform) in (&camera_storage, &transform_storage).join() {
         maybe_camera = Some(CameraRecord {
             transform: transform.clone(),
             camera: camera_instance.clone(),
         })
     }
+
 
     if let Some(camera) = maybe_camera {
         log::info!("construct and return GameRecord");
@@ -126,6 +138,7 @@ fn build_save(world: &mut World) -> Option<GameRecord> {
             balls,
             videographer,
             camera,
+            pedometer,
         })
     } else {
         log::error!("couldn't find a camera!");

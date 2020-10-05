@@ -38,14 +38,19 @@ pub fn load_ball(
 pub fn initialize_ball(world: &mut World, sprite_sheet_handle: &Handle<SpriteSheet>) {
     let mut local_transform = Transform::default();
 
-    let (ball_radius, view_height, view_width) = {
+    let (ball_radius, start_x, start_y, start_z) = {
         let config = &world.read_resource::<WanderballConfig>();
-        (config.ball_radius, config.view_height, config.view_width)
+        (
+            config.ball_radius,
+            config.start_x,
+            config.start_y,
+            config.start_ball_z,
+        )
     };
 
-    let x = view_width - (view_width * 0.25);
-    let y = view_height - (view_height * 0.75);
-    let z = 1.0;
+    let x = start_x;
+    let y = start_y;
+    let z = start_z;
 
     local_transform.set_translation_xyz(x, y, z);
 

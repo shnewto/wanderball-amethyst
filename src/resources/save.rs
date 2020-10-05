@@ -1,11 +1,13 @@
 use crate::components::{
-    shapes::{circle::Circle, rectangle::Rectangle},
+    shapes::{circle::Circle, rectangle::{Rectangle}},
     videographer::Videographer,
 };
+
 use amethyst::{core::Transform, renderer::Camera};
 use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, Default)]
 pub struct PathSegmentRecord {
     pub transform: Transform,
     pub rectangle: Rectangle,
@@ -35,4 +37,11 @@ pub struct GameRecord {
     pub balls: Vec<BallRecord>,
     pub videographer: VideographerRecord,
     pub camera: CameraRecord,
+    pub pedometer: PedometerRecord,
+}
+
+#[derive(Serialize, Deserialize, Debug, Clone, Default)]
+pub struct PedometerRecord {
+    pub steps: i32,
+    pub visited: HashMap<String, ()>,
 }

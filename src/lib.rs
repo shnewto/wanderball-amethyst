@@ -25,7 +25,6 @@ mod side;
 mod spritesheet;
 mod states;
 mod systems;
-mod util;
 
 use crate::audio::Music;
 use crate::bundle::WanderballBundle;
