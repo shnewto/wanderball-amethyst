@@ -37,46 +37,56 @@ pub fn load_path(
     path_segments: Vec<PathSegmentRecord>,
     sprite_sheet_handle: &Handle<SpriteSheet>,
 ) {
-    for segment in path_segments {
+    for segment in &path_segments {
         let segment_render = SpriteRender::new(sprite_sheet_handle.clone(), 1);
         world
             .create_entity()
             .with(segment_render)
             .with(PathSegment)
-            .with(segment.rectangle)
-            .with(segment.transform)
+            .with(segment.rectangle.clone())
+            .with(segment.transform.clone())
             .build();
     }
+    world.insert(path_segments)
 }
 
 pub fn initialize_path(world: &mut World, sprite_sheet_handle: &Handle<SpriteSheet>) {
-    let (view_height, path_segment_height, path_segment_width, path_length) = {
+    let (path_segment_height, path_segment_width, path_length, start_x, start_y, start_z) = {
         let config = &world.read_resource::<WanderballConfig>();
         (
-            config.view_height,
             config.path_segment_height,
             config.path_segment_width,
             config.path_length,
+            config.start_x,
+            config.start_y,
+            config.start_path_z,
         )
     };
 
+    let mut path_segments: Vec<PathSegmentRecord> = vec![];
+
     // origin path segment
-    let mut y = view_height * 0.25;
-    let mut x = 0.0;
-    let z: f32 = 0.0;
+    let mut x = start_x;
+    let mut y = start_y;
+    let z = start_z;
 
     let segment_render = SpriteRender::new(sprite_sheet_handle.clone(), 1);
 
     let mut first_transform = Transform::default();
     first_transform.set_translation_xyz(x, y, z);
-
+    let rectangle = Rectangle::new(path_segment_width, path_segment_height);
     world
         .create_entity()
         .with(segment_render.clone())
         .with(PathSegment)
-        .with(Rectangle::new(path_segment_width, path_segment_height))
-        .with(first_transform)
+        .with(rectangle.clone())
+        .with(first_transform.clone())
         .build();
+
+    path_segments.push(PathSegmentRecord {
+        transform: first_transform,
+        rectangle,
+    });
 
     // Rest of path
     let mut rng = rand::thread_rng();
@@ -165,13 +175,29 @@ pub fn initialize_path(world: &mut World, sprite_sheet_handle: &Handle<SpriteShe
         next_transform.set_translation_xyz(x, y, z);
         next_transform.rotate_2d(rotation.to_radians());
 
+        let rectangle: Rectangle;
+        if choice == LEFT || choice == RIGHT {
+            rectangle = Rectangle::new(path_segment_width, path_segment_height);
+        } else {
+            // rotated so we flip width/height to make things easier when we're figuring out how to 
+            // keep the ball on the path when we want to
+            rectangle = Rectangle::new(path_segment_height, path_segment_width);
+        }
+        
         world
             .create_entity()
             .with(segment_render.clone())
             .with(PathSegment)
-            .with(Rectangle::new(path_segment_width, path_segment_height))
-            .with(next_transform)
+            .with(rectangle.clone())
+            .with(next_transform.clone())
             .with(Hidden)
             .build();
+
+        path_segments.push(PathSegmentRecord {
+            transform: next_transform,
+            rectangle,
+        });
     }
+
+    world.insert(path_segments);
 }

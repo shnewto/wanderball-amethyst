@@ -6,7 +6,7 @@ use amethyst::{
 };
 
 use crate::audio::initialize_audio;
-use crate::components::coordinate::CoordinateText;
+use crate::components::wanderdata::{CoordinateText, PedometerText};
 use crate::states::game::Wanderball;
 use crate::states::loading::Loading;
 
@@ -31,9 +31,11 @@ impl SimpleState for StartScreen {
 
         initialize_audio(world);
         let noop_coordinates = world.create_entity().build();
+        let noop_steps = world.create_entity().build();
         world.insert(CoordinateText {
             coordinates: noop_coordinates,
-        })
+        });
+        world.insert(PedometerText { steps: noop_steps });
     }
 
     fn update(&mut self, state_data: &mut StateData<'_, GameData<'_, '_>>) -> SimpleTrans {

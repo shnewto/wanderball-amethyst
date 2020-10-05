@@ -1,10 +1,10 @@
 use crate::audio::start_audio;
 use crate::camera::{initialize_camera, load_camera};
 use crate::components::ball::{initialize_ball, load_ball, Ball};
-use crate::components::coordinate::init_coordinates;
 use crate::components::path::{initialize_path, load_path, PathSegment};
 use crate::components::shapes::{circle::Circle, rectangle::Rectangle};
 use crate::components::videographer::{initialize_videographer, load_videographer, Videographer};
+use crate::components::wanderdata::{init_coordinates, init_pedometer};
 use crate::resources::save::GameRecord;
 use crate::spritesheet;
 use crate::states::menu::Menu;
@@ -46,6 +46,7 @@ impl SimpleState for Wanderball {
             initialize_ball(world, &sprite_sheet_handle);
             videographer = initialize_videographer(world);
             initialize_camera(world, videographer);
+            init_pedometer(world);
         }
 
         init_coordinates(world);

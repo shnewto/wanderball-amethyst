@@ -5,7 +5,7 @@ use crate::components::{
 use amethyst::{core::Transform, renderer::Camera};
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
+#[derive(Serialize, Deserialize, Debug, Clone, Default)]
 pub struct PathSegmentRecord {
     pub transform: Transform,
     pub rectangle: Rectangle,

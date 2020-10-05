@@ -7,10 +7,10 @@ use amethyst::{
 };
 
 use crate::components::ball::Ball;
+use crate::components::shapes::rectangle::{point_near_edge_of_rect, Point2d};
 use crate::components::videographer::Videographer;
 use crate::config::WanderballConfig;
 use crate::side::Side;
-use crate::util::{point_near_edge_of_rect, Point};
 
 #[derive(SystemDesc, Default)]
 pub struct VideographerSystem;
@@ -38,7 +38,7 @@ impl<'s> System<'s> for VideographerSystem {
             ball_y = transform.translation().y as f32;
         }
 
-        let point = Point {
+        let point = Point2d {
             x: ball_x,
             y: ball_y,
         };
@@ -93,7 +93,7 @@ impl<'s> System<'s> for VideographerSystem {
                 videographer.view_width = new_width;
             }
 
-            let rect_center = Point {
+            let rect_center = Point2d {
                 x: videographer.view_x,
                 y: videographer.view_y,
             };
