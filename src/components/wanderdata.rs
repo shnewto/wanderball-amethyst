@@ -161,8 +161,6 @@ pub fn load_pedometer(world: &mut World, pedometer_record: PedometerRecord) {
 
     world.insert(PedometerText { steps });
 
-    log::info!("pedometer - {:?}", pedometer_record);
-
     world.insert(Pedometer {
         steps: pedometer_record.steps,
         visited: pedometer_record.visited,

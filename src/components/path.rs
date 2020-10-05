@@ -101,18 +101,18 @@ pub fn initialize_path(world: &mut World, sprite_sheet_handle: &Handle<SpriteShe
             UP => {
                 rotation = 90.0f32;
                 if last_choice == DOWN {
-                    y = y - path_segment_width;
+                    y -= path_segment_width;
                     last_choice = DOWN;
                 } else if last_choice == LEFT {
-                    y = y + path_segment_height;
+                    y += path_segment_height;
                     x = x - path_segment_width + path_segment_height;
                     last_choice = choice;
                 } else if last_choice == RIGHT {
-                    y = y + path_segment_height;
+                    y += path_segment_height;
                     x = x + path_segment_width - path_segment_height;
                     last_choice = choice;
                 } else {
-                    y = y + path_segment_width;
+                    y += path_segment_width;
                     last_choice = choice;
                 }
             }
@@ -122,32 +122,32 @@ pub fn initialize_path(world: &mut World, sprite_sheet_handle: &Handle<SpriteShe
                     x = x - path_segment_width * 0.5 + path_segment_height * 0.5;
                     last_choice = choice;
                 } else if last_choice == RIGHT {
-                    x = x + path_segment_width;
+                    x += path_segment_width;
                     last_choice = RIGHT;
                 } else if last_choice == DOWN {
                     y = y - path_segment_width * 0.5 - path_segment_height * 0.5;
                     x = x - path_segment_width * 0.5 + path_segment_height * 0.5;
                     last_choice = choice;
                 } else {
-                    x = x - path_segment_width;
+                    x -= path_segment_width;
                     last_choice = choice;
                 }
             }
             DOWN => {
                 rotation = 90.0f32;
                 if last_choice == UP {
-                    y = y + path_segment_width;
+                    y += path_segment_width;
                     last_choice = UP;
                 } else if last_choice == LEFT {
-                    y = y - path_segment_height;
+                    y -= path_segment_height;
                     x = x - path_segment_width + path_segment_height;
                     last_choice = choice;
                 } else if last_choice == RIGHT {
-                    y = y - path_segment_height;
+                    y -= path_segment_height;
                     x = x + path_segment_width - path_segment_height;
                     last_choice = choice;
                 } else {
-                    y = y - path_segment_width;
+                    y -= path_segment_width;
                     last_choice = choice;
                 }
             }
@@ -157,14 +157,14 @@ pub fn initialize_path(world: &mut World, sprite_sheet_handle: &Handle<SpriteShe
                     x = x + path_segment_width * 0.5 - path_segment_height * 0.5;
                     last_choice = choice;
                 } else if last_choice == LEFT {
-                    x = x - path_segment_width;
+                    x -= path_segment_width;
                     last_choice = LEFT;
                 } else if last_choice == DOWN {
                     y = y - path_segment_width * 0.5 - path_segment_height * 0.5;
                     x = x + path_segment_width * 0.5 - path_segment_height * 0.5;
                     last_choice = choice;
                 } else {
-                    x = x + path_segment_width;
+                    x += path_segment_width;
                     last_choice = choice;
                 }
             }
