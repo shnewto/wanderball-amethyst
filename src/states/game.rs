@@ -4,7 +4,7 @@ use crate::components::ball::{initialize_ball, load_ball, Ball};
 use crate::components::path::{initialize_path, load_path, PathSegment};
 use crate::components::shapes::{circle::Circle, rectangle::Rectangle};
 use crate::components::videographer::{initialize_videographer, load_videographer, Videographer};
-use crate::components::wanderdata::{init_coordinates, init_pedometer};
+use crate::components::wanderdata::{init_coordinates, init_pedometer, load_pedometer, Pedometer};
 use crate::resources::save::GameRecord;
 use crate::spritesheet;
 use crate::states::menu::Menu;
@@ -24,6 +24,7 @@ impl SimpleState for Wanderball {
 
         world.register::<Circle>();
         world.register::<Rectangle>();
+        world.register::<Pedometer>();
 
         let sprite_sheet_handle = spritesheet::load_sprite_sheet(world);
 
@@ -41,6 +42,7 @@ impl SimpleState for Wanderball {
             load_ball(world, record.balls, &sprite_sheet_handle);
             videographer = load_videographer(world, record.videographer);
             load_camera(world, record.camera, videographer);
+            load_pedometer(world, record.pedometer);
         } else {
             initialize_path(world, &sprite_sheet_handle);
             initialize_ball(world, &sprite_sheet_handle);

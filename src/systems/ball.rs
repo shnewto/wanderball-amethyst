@@ -8,12 +8,10 @@ use amethyst::{
 
 use crate::components::{
     ball::Ball,
-    shapes::{rectangle::{point_in_rect, Point2d}},
-    videographer::Videographer,
+    shapes::{rectangle::{point_in_rect}},
     wanderdata::{Pedometer, PedometerText},
 };
 
-use crate::config::WanderballConfig;
 use crate::resources::save::PathSegmentRecord;
 
 #[derive(SystemDesc)]

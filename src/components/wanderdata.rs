@@ -1,5 +1,6 @@
 use crate::components::ball::Ball;
 use crate::config::WanderballConfig;
+use crate::resources::save::PedometerRecord;
 use amethyst::{
     assets::Loader,
     core::transform::Transform,
@@ -9,6 +10,7 @@ use amethyst::{
 };
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
+use log;
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default)]
 pub struct Coordinate {
@@ -52,7 +54,7 @@ pub fn init_coordinates(world: &mut World) {
     }
 
     let (
-        wanderdata_display_x,
+        wanderdata_display_left_x,
         wanderdata_display_y,
         wanderdata_display_z,
         wanderdata_display_width,
@@ -62,7 +64,7 @@ pub fn init_coordinates(world: &mut World) {
     ) = {
         let config = &world.read_resource::<WanderballConfig>();
         (
-            config.wanderdata_display_x,
+            config.wanderdata_display_left_x,
             config.wanderdata_display_y,
             config.wanderdata_display_z,
             config.wanderdata_display_width,
@@ -82,7 +84,7 @@ pub fn init_coordinates(world: &mut World) {
         "coordinates".to_string(),
         Anchor::TopLeft,
         Anchor::TopLeft,
-        wanderdata_display_x,
+        wanderdata_display_left_x,
         wanderdata_display_y,
         wanderdata_display_z,
         wanderdata_display_width,
@@ -105,9 +107,10 @@ pub fn init_coordinates(world: &mut World) {
     world.insert(CoordinateText { coordinates });
 }
 
-pub fn init_pedometer(world: &mut World) {
+
+pub fn load_pedometer(world: &mut World, pedometer_record: PedometerRecord) {
     let (
-        wanderdata_display_x,
+        wanderdata_display_right_x,
         wanderdata_display_y,
         wanderdata_display_z,
         wanderdata_display_width,
@@ -117,7 +120,7 @@ pub fn init_pedometer(world: &mut World) {
     ) = {
         let config = &world.read_resource::<WanderballConfig>();
         (
-            config.wanderdata_display_x,
+            config.wanderdata_display_right_x,
             config.wanderdata_display_y,
             config.wanderdata_display_z,
             config.wanderdata_display_width,
@@ -138,7 +141,69 @@ pub fn init_pedometer(world: &mut World) {
         "pedometer".to_string(),
         Anchor::TopRight,
         Anchor::TopRight,
-        wanderdata_display_x,
+        wanderdata_display_right_x,
+        wanderdata_display_y,
+        wanderdata_display_z,
+        wanderdata_display_width,
+        wanderdata_display_height,
+    );
+    
+
+    let steps = world
+        .create_entity()
+        .with(pedometer_transform)
+        .with(UiText::new(
+            font.clone(),
+            format!("(path steps: {})", pedometer_record.steps),
+            wanderdata_display_color,
+            wanderdata_display_font_size,
+            LineMode::Single,
+            Anchor::Middle,
+        ))
+        .build();
+
+    world.insert(PedometerText { steps });
+
+    log::info!("pedometer - {:?}", pedometer_record);
+
+    world.insert(Pedometer{ steps: pedometer_record.steps, visited: pedometer_record.visited })
+}
+
+
+pub fn init_pedometer(world: &mut World) {
+    let (
+        wanderdata_display_right_x,
+        wanderdata_display_y,
+        wanderdata_display_z,
+        wanderdata_display_width,
+        wanderdata_display_height,
+        wanderdata_display_color,
+        wanderdata_display_font_size,
+    ) = {
+        let config = &world.read_resource::<WanderballConfig>();
+        (
+            config.wanderdata_display_right_x,
+            config.wanderdata_display_y,
+            config.wanderdata_display_z,
+            config.wanderdata_display_width,
+            config.wanderdata_display_height,
+            config.wanderdata_display_color,
+            config.wanderdata_display_font_size,
+        )
+    };
+
+    let font = world.read_resource::<Loader>().load(
+        "font/square.ttf",
+        TtfFormat,
+        (),
+        &world.read_resource(),
+    );
+
+    let pedometer_transform = UiTransform::new(
+        "pedometer".to_string(),
+        Anchor::TopRight,
+        Anchor::TopRight,
+        wanderdata_display_right_x,
         wanderdata_display_y,
         wanderdata_display_z,
         wanderdata_display_width,
@@ -147,7 +212,7 @@ pub fn init_pedometer(world: &mut World) {
 
     let steps = world
         .create_entity()
-        .with(pedometer_transform)
+        .with(pedometer_transform.clone())
         .with(UiText::new(
             font.clone(),
             format!("(path steps: {})", 0.0),
