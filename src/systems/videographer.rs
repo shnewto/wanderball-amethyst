@@ -6,8 +6,9 @@ use amethyst::{
     renderer::Camera,
 };
 
+use crate::camera::zoom;
 use crate::components::ball::Ball;
-use crate::components::shapes::rectangle::{point_near_edge_of_rect, Point2d};
+use crate::components::shapes::rectangle::point_outside_rect;
 use crate::components::videographer::Videographer;
 use crate::config::WanderballConfig;
 use crate::side::Side;
@@ -31,16 +32,23 @@ impl<'s> System<'s> for VideographerSystem {
     ) {
         let mut ball_x = 0.0;
         let mut ball_y = 0.0;
-
         // Get the local position of the ball.
         for (_ball, transform) in (&balls, &transforms).join() {
             ball_x = transform.translation().x as f32;
             ball_y = transform.translation().y as f32;
         }
 
-        let point = Point2d {
-            x: ball_x,
-            y: ball_y,
+        let left = |videographer: &Videographer| -> f32 {
+            videographer.view_x - (videographer.view_width * 0.5)
+        };
+        let bottom = |videographer: &Videographer| -> f32 {
+            videographer.view_y - (videographer.view_height * 0.5)
+        };
+        let right = |videographer: &Videographer| -> f32 {
+            videographer.view_x + (videographer.view_width * 0.5)
+        };
+        let top = |videographer: &Videographer| -> f32 {
+            videographer.view_y + (videographer.view_height * 0.5)
         };
 
         let fast_zoom = input.action_is_down("fast_movement");
@@ -69,7 +77,7 @@ impl<'s> System<'s> for VideographerSystem {
                         new_view_height = (curr_view_height - zoom_factor).max(100.0);
                         new_view_width = (curr_view_width - zoom_factor).max(100.0);
                     }
-                    *camera = Camera::standard_2d(new_view_width, new_view_height);
+                    zoom(camera, new_view_width, new_view_height);
                     height = Some(new_view_height);
                     width = Some(new_view_width);
                 } else if zoom_input < 0.0 {
@@ -80,7 +88,7 @@ impl<'s> System<'s> for VideographerSystem {
                         new_view_height = (curr_view_height + zoom_factor).max(100.0);
                         new_view_width = (curr_view_width + zoom_factor).max(100.0);
                     }
-                    *camera = Camera::standard_2d(new_view_width, new_view_height);
+                    zoom(camera, new_view_width, new_view_height);
                     height = Some(new_view_height);
                     width = Some(new_view_width);
                 }
@@ -93,16 +101,16 @@ impl<'s> System<'s> for VideographerSystem {
                 videographer.view_width = new_width;
             }
 
-            let rect_center = Point2d {
-                x: videographer.view_x,
-                y: videographer.view_y,
-            };
-
-            if let Some(side) =
-                point_near_edge_of_rect(&point, &rect_center, videographer.view_width * 0.5, 0.0)
-            {
+            if let Some(side) = point_outside_rect(
+                ball_x,
+                ball_y,
+                left(videographer),
+                bottom(videographer),
+                right(videographer),
+                top(videographer),
+            ) {
                 let mut new_x = videographer.view_x;
-                let mut new_y = videographer.view_x;
+                let mut new_y = videographer.view_y;
                 let shift_dist = videographer.view_width;
 
                 match side {
@@ -120,8 +128,8 @@ impl<'s> System<'s> for VideographerSystem {
                     }
                 }
 
-                transform.set_translation_x(new_x);
-                transform.set_translation_y(new_y);
+                transform.set_translation_xyz(new_x, new_y, 2.0);
+                // transform.set_translation_y(new_y);
                 videographer.view_x = new_x;
                 videographer.view_y = new_y;
             }

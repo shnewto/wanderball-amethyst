@@ -37,20 +37,22 @@ pub fn point_in_rect(x: f32, y: f32, left: f32, bottom: f32, right: f32, top: f3
     x >= left && x <= right && y >= bottom && y <= top
 }
 
-pub fn point_near_edge_of_rect(
-    point: &Point2d,
-    rect_center: &Point2d,
-    dist_to_edge: f32,
-    threshold: f32,
+pub fn point_outside_rect(
+    x: f32,
+    y: f32,
+    left: f32,
+    bottom: f32,
+    right: f32,
+    top: f32,
 ) -> Option<Side> {
-    if (point.x + threshold) >= rect_center.x + dist_to_edge {
-        Some(Side::Right)
-    } else if (point.x - threshold) <= rect_center.x - dist_to_edge {
+    if x < left {
         Some(Side::Left)
-    } else if (point.y + threshold) >= rect_center.y + dist_to_edge {
-        Some(Side::Top)
-    } else if (point.y - threshold) <= rect_center.y - dist_to_edge {
+    } else if x > right {
+        Some(Side::Right)
+    } else if y < bottom {
         Some(Side::Bottom)
+    } else if y > top {
+        Some(Side::Top)
     } else {
         None
     }
