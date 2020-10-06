@@ -3,7 +3,7 @@ use amethyst::{
     core::{transform::Transform, Hidden},
     ecs::{Component, VecStorage, World},
     prelude::*,
-    renderer::{SpriteRender, SpriteSheet},
+    renderer::{palette::Srgba, resources::Tint, SpriteRender, SpriteSheet},
 };
 
 use rand::Rng;
@@ -65,6 +65,8 @@ pub fn initialize_path(world: &mut World, sprite_sheet_handle: &Handle<SpriteShe
 
     let mut path_segments: Vec<PathSegmentRecord> = vec![];
 
+    let tint = Tint(Srgba::new(1.0, 1.0, 1.0, 1.0)); // white == no tint
+
     // origin path segment
     let mut x = start_x;
     let mut y = start_y;
@@ -81,6 +83,7 @@ pub fn initialize_path(world: &mut World, sprite_sheet_handle: &Handle<SpriteShe
         .with(PathSegment)
         .with(rectangle.clone())
         .with(first_transform.clone())
+        .with(tint)
         .build();
 
     path_segments.push(PathSegmentRecord {
@@ -190,6 +193,7 @@ pub fn initialize_path(world: &mut World, sprite_sheet_handle: &Handle<SpriteShe
             .with(PathSegment)
             .with(rectangle.clone())
             .with(next_transform.clone())
+            .with(tint)
             .with(Hidden)
             .build();
 

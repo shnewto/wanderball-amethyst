@@ -8,7 +8,7 @@
     ball_radius: 2.0,
     path_segment_height: 8.0, 
     path_segment_width: 24.0,
-    path_length: 10000,
+    path_length: 1000,
     move_factor: 100.0,
     fast_move_factor: 10.0,
     zoom_factor: 50.0,
