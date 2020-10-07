@@ -3,7 +3,7 @@ use crate::components::{
     videographer::Videographer,
 };
 
-use amethyst::{core::Transform, renderer::Camera};
+use amethyst::{core::Transform, renderer::resources::Tint, renderer::Camera};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
@@ -11,6 +11,7 @@ use std::collections::HashMap;
 pub struct PathSegmentRecord {
     pub transform: Transform,
     pub rectangle: Rectangle,
+    pub tint: Tint,
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
