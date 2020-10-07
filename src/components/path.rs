@@ -44,6 +44,7 @@ pub fn load_path(
             .with(segment_render)
             .with(PathSegment)
             .with(segment.rectangle.clone())
+            .with(segment.tint)
             .with(segment.transform.clone())
             .build();
     }
@@ -89,6 +90,7 @@ pub fn initialize_path(world: &mut World, sprite_sheet_handle: &Handle<SpriteShe
     path_segments.push(PathSegmentRecord {
         transform: first_transform,
         rectangle,
+        tint,
     });
 
     // Rest of path
@@ -200,6 +202,7 @@ pub fn initialize_path(world: &mut World, sprite_sheet_handle: &Handle<SpriteShe
         path_segments.push(PathSegmentRecord {
             transform: next_transform,
             rectangle,
+            tint,
         });
     }
 

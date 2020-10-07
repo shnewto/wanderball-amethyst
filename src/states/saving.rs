@@ -2,7 +2,7 @@ use amethyst::{
     core::Transform,
     ecs::{Entity, Join},
     prelude::*,
-    renderer::Camera,
+    renderer::{resources::Tint, Camera},
 };
 
 use crate::components::{
@@ -72,6 +72,7 @@ fn build_save(world: &mut World) -> Option<GameRecord> {
     let circle_storage = world.read_storage::<Circle>();
     let rectangle_storage = world.read_storage::<Rectangle>();
     let path_segment_storage = world.read_storage::<PathSegment>();
+    let tint_storage = world.read_storage::<Tint>();
     let videographer_storage = world.read_storage::<Videographer>();
     let camera_storage = world.read_storage::<Camera>();
     let transform_storage = world.read_storage::<Transform>();
@@ -90,9 +91,10 @@ fn build_save(world: &mut World) -> Option<GameRecord> {
         })
     }
 
-    for (_segment, rectangle, transform) in (
+    for (_segment, rectangle, tint, transform) in (
         &path_segment_storage,
         &rectangle_storage,
+        &tint_storage,
         &transform_storage,
     )
         .join()
@@ -100,6 +102,7 @@ fn build_save(world: &mut World) -> Option<GameRecord> {
         path_segments.push(PathSegmentRecord {
             transform: transform.clone(),
             rectangle: rectangle.clone(),
+            tint: *tint,
         })
     }
 
